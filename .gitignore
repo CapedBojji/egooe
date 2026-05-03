@@ -1,1 +1,4 @@
 Packages/
+**.rbxl
+**.rbxlx
+**.rbxl.lock

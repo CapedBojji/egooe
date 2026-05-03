@@ -1,0 +1,9 @@
+[tools]
+"github:rojo-rbx/rojo" = "latest"
+"github:lune-org/lune" = "latest"
+"github:UpliftGames/wally" = "latest"
+
+
+[tasks]
+"test:build" = "rojo build -o game.rbxl test.project.json"
+"test:start" = "mise run test:build && open game.rbxl && rojo serve"
