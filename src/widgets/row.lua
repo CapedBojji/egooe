@@ -16,6 +16,7 @@
 ]=]
 
 local Runtime = require(script.Parent.Parent.Runtime)
+local Style = require(script.Parent.Parent.Style)
 local create = require(script.Parent.Parent.create)
 
 return Runtime.widget(function(options, fn)
@@ -38,10 +39,12 @@ return Runtime.widget(function(options, fn)
 	end
 
 	local refs = Runtime.useInstance(function(ref)
+		local style = Style.get()
+
 		return create("Frame", {
 			[ref] = "frame",
 			BackgroundTransparency = 1,
-			Size = UDim2.new(1, 0, 0, 22),
+			Size = UDim2.new(1, 0, 0, style.itemHeight),
 
 			create("UIListLayout", {
 				[ref] = "layout",

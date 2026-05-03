@@ -235,14 +235,14 @@ end
 
 --[=[
 	@within IrisPlasma
-	@param creator (ref: {}) -> (Instance, Instance?) -- A callback which creates the widget and returns it
-	@return Instance -- Returns the instance returned by `creator`
+	@param creator (ref: {[string]: Instance}) -> (Instance, Instance?) -- A callback which creates the widget's instances. `ref` is a table you can key-assign inside `create(...)` to capture named instances. Returns the root instance and an optional container instance (used as the parent for child widgets instead of the root).
+	@return {[string]: Instance} -- The `ref` table populated by `creator`, keyed by the names you assigned inside `create(...)`.
 	@tag hooks
 
 	`useInstance` takes a callback which should be used to create the initial UI for the widget.
 	The callback is only ever invoked the first time this widget runs and never again.
 ]=]
-function Runtime.useInstance(creator: () -> Instance): Instance
+function Runtime.useInstance(creator: (ref: { [string]: Instance }) -> (Instance, Instance?)): { [string]: Instance }
 	local node = stack[#stack].node
 	local parentFrame = Runtime.nearestStackFrameWithInstance()
 
