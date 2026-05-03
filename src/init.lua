@@ -75,4 +75,5 @@ return {
 	row = require(script.widgets.row) :: (options: (RowOptions | (() -> ()))?, children: (() -> ())?) -> (),
 	space = require(script.widgets.space) :: (size: number?) -> (),
 	portal = require(script.widgets.portal) :: (targetInstance: Instance, children: () -> ()) -> (),
+	demoWindow = require(script.widgets.demoWindow) :: () -> (),
 }

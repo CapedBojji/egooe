@@ -19,6 +19,26 @@ IrisPlasma = "capedbojji/iris-plasma@0.1.0"
 
 Or sync with [Rojo](https://rojo.space/) using `default.project.json`.
 
+## Demo Window
+
+The quickest way to see all widgets in action — just call `demoWindow()` inside your `start` loop:
+
+```lua
+local IrisPlasma = require(path.to.IrisPlasma)
+local node = IrisPlasma.new(playerGui.ScreenGui)
+
+RunService.Heartbeat:Connect(function()
+    IrisPlasma.start(node, function()
+        IrisPlasma.demoWindow()
+    end)
+end)
+```
+
+This opens a 340×580 window covering every widget category:
+**Text** (label, heading, wrapped text) · **Buttons** (normal, sized, disabled) ·
+**Checkboxes** (controlled, uncontrolled, disabled) · **Sliders** · **Text Input** ·
+**Row layouts** · **Separators** · **Conditional visibility toggle**
+
 ## Quick Start
 
 ```lua
@@ -64,6 +84,7 @@ end)
 | `row`         | Horizontal layout container                      |
 | `space`       | Blank pixel spacer                               |
 | `portal`      | Mount children in an arbitrary Instance          |
+| `demoWindow`  | Live showcase of every widget (zero setup)       |
 
 ## Style
 
