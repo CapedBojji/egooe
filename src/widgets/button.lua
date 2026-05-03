@@ -1,3 +1,7 @@
+export type ButtonHandle = {
+	clicked: () -> boolean,
+}
+
 --[=[
 	@within IrisPlasma
 	@function button

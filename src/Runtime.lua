@@ -195,7 +195,7 @@ end
 	@return (newValue: T) -> () -- A function which when called stores the value in this hook for the next run
 	@tag hooks
 ]=]
-function Runtime.useState<T>(initialValue: T): T
+function Runtime.useState<T>(initialValue: T): (T, (newValue: T) -> ())
 	local frame = stack[#stack]
 	local states = frame.node.states
 

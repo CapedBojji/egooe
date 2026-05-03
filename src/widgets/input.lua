@@ -1,3 +1,9 @@
+export type InputHandle = {
+	value: () -> string,
+	changed: () -> boolean,
+	submitted: () -> boolean,
+}
+
 --[=[
 	@within IrisPlasma
 	@function input

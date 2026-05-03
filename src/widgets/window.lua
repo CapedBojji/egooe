@@ -35,6 +35,10 @@
 	```
 ]=]
 
+export type WindowHandle = {
+	closed: () -> boolean,
+}
+
 local GuiService = game:GetService("GuiService")
 local UserInputService = game:GetService("UserInputService")
 
@@ -72,7 +76,12 @@ return Runtime.widget(function(options, fn)
 			BackgroundColor3 = style.windowBgColor,
 			BackgroundTransparency = style.windowBgTransparency,
 			BorderSizePixel = 0,
-			Position = UDim2.new(0, options.position and options.position.X or 60, 0, options.position and options.position.Y or 60),
+			Position = UDim2.new(
+				0,
+				options.position and options.position.X or 60,
+				0,
+				options.position and options.position.Y or 60
+			),
 			Size = UDim2.new(0, initialSize.X, 0, initialSize.Y),
 			ClipsDescendants = true,
 
@@ -147,13 +156,18 @@ return Runtime.widget(function(options, fn)
 				}),
 
 				InputBegan = function(clickInput)
-					if not ref.titleBar.Active then return end
-					if clickInput.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+					if not ref.titleBar.Active then
+						return
+					end
+					if clickInput.UserInputType ~= Enum.UserInputType.MouseButton1 then
+						return
+					end
 
 					local lastMousePosition = clickInput.Position
 
 					-- Pop out of layout containers
-					if ref.frame.Parent:FindFirstChildWhichIsA("UIGridStyleLayout")
+					if
+						ref.frame.Parent:FindFirstChildWhichIsA("UIGridStyleLayout")
 						and not ref.frame.Parent:IsA("ScreenGui")
 					then
 						local beforePosition = ref.frame.AbsolutePosition
@@ -166,7 +180,9 @@ return Runtime.widget(function(options, fn)
 					end
 
 					ref.dragConnection = connectEvent(UserInputService, "InputChanged", function(moveInput)
-						if moveInput.UserInputType ~= Enum.UserInputType.MouseMovement then return end
+						if moveInput.UserInputType ~= Enum.UserInputType.MouseMovement then
+							return
+						end
 						local delta = lastMousePosition - moveInput.Position
 						lastMousePosition = moveInput.Position
 						ref.frame.Position = ref.frame.Position - UDim2.new(0, delta.X, 0, delta.Y)
@@ -223,24 +239,23 @@ return Runtime.widget(function(options, fn)
 				ZIndex = 5,
 
 				InputBegan = function(clickInput)
-					if clickInput.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+					if clickInput.UserInputType ~= Enum.UserInputType.MouseButton1 then
+						return
+					end
 
 					local initMousePos = clickInput.Position
 					local initSize = ref.frame.AbsoluteSize
 
 					ref.resizeConnection = connectEvent(UserInputService, "InputChanged", function(moveInput)
-						if moveInput.UserInputType ~= Enum.UserInputType.MouseMovement then return end
+						if moveInput.UserInputType ~= Enum.UserInputType.MouseMovement then
+							return
+						end
 
-						local delta = Vector2.new(
-							moveInput.Position.X - initMousePos.X,
-							moveInput.Position.Y - initMousePos.Y
-						)
+						local delta =
+							Vector2.new(moveInput.Position.X - initMousePos.X, moveInput.Position.Y - initMousePos.Y)
 
 						local newSize = initSize + delta
-						newSize = Vector2.new(
-							math.max(MIN_SIZE.X, newSize.X),
-							math.max(MIN_SIZE.Y, newSize.Y)
-						)
+						newSize = Vector2.new(math.max(MIN_SIZE.X, newSize.X), math.max(MIN_SIZE.Y, newSize.Y))
 
 						ref.frame.Size = UDim2.new(0, newSize.X, 0, newSize.Y)
 						ref.container.Size = UDim2.new(1, 0, 0, newSize.Y - titleBarHeight)

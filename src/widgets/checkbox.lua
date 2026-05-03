@@ -1,3 +1,8 @@
+export type CheckboxHandle = {
+	checked: () -> boolean,
+	clicked: () -> boolean,
+}
+
 --[=[
 	@within IrisPlasma
 	@function checkbox
