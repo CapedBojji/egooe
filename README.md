@@ -1,4 +1,4 @@
-# improved-garbanzo
+# iris-plasma (improved-garbanzo)
 
 An immediate-mode UI framework for Roblox with **Iris visual style** and a **Plasma-compatible API**.
 

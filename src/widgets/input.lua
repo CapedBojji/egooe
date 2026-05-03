@@ -2,7 +2,7 @@
 	@within IrisPlasma
 	@function input
 	@tag widgets
-	@param options {text: string, placeholder: string, label: string, password: boolean}
+	@param options {text: string, placeholder: string, label: string}
 	@return InputHandle
 
 	An Iris-styled text input box.
@@ -137,12 +137,6 @@ return Runtime.widget(function(options)
 	end
 
 	box.PlaceholderText = options.placeholder or ""
-
-	if options.password then
-		-- Roblox doesn't have a built-in password mask, approximate with dots
-		-- using a separate display; just set the property if available
-		box.TextEditable = true
-	end
 
 	-- Highlight border when focused
 	if focused then
