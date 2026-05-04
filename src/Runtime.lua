@@ -452,6 +452,14 @@ function Runtime.widget(fn)
 	end
 end
 
+function Runtime.useRootInstance(): Instance?
+	local rootFrame = stack[1]
+	if rootFrame then
+		return rootFrame.node.instance
+	end
+	return nil
+end
+
 function Runtime.setEventCallback(callback: EventCallback)
 	stack[1].node.eventCallback = callback
 end

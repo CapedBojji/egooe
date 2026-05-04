@@ -6,4 +6,4 @@
 
 [tasks]
 "test:build" = "rojo build -o game.rbxl test.project.json"
-"test:start" = "mise run test:build && open game.rbxl && rojo serve"
+"test:start" = "mise run test:build && open game.rbxl && rojo serve test.project.json"

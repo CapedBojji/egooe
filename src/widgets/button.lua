@@ -65,6 +65,7 @@ return Runtime.widget(function(text, options)
 			end,
 
 			MouseButton1Down = function()
+				print("[Button] MouseButton1Down:", text)
 				setPressing(true)
 			end,
 
@@ -73,6 +74,7 @@ return Runtime.widget(function(text, options)
 			end,
 
 			Activated = function()
+				print("[Button] Activated:", text)
 				if not options.disabled then
 					setClicked(true)
 				end

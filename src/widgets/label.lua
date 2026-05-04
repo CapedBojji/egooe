@@ -36,12 +36,21 @@ return Runtime.widget(function(text, options)
 		})
 	end)
 
+	local style = Style.get()
 	local label = refs.label
 	label.Text = text
-	label.TextSize = options.textSize or Style.get().textSize
-	label.TextColor3 = options.color or Style.get().textColor
-	label.TextWrapped = options.wrapped or false
+	label.TextSize = options.textSize or style.textSize
+	label.TextColor3 = options.color or style.textColor
+
 	if options.wrapped then
+		label.TextWrapped = true
 		label.TextTruncate = Enum.TextTruncate.None
+		label.AutomaticSize = Enum.AutomaticSize.Y
+		label.Size = UDim2.new(1, 0, 0, 0)
+	else
+		label.TextWrapped = false
+		label.TextTruncate = Enum.TextTruncate.AtEnd
+		label.AutomaticSize = Enum.AutomaticSize.None
+		label.Size = UDim2.new(1, 0, 0, style.itemHeight)
 	end
 end)

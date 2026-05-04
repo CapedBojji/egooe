@@ -52,6 +52,19 @@ local defaultStyle = {
 	headerColor = Color3.fromRGB(66, 150, 250),
 	headerTransparency = 0.69,
 
+	-- SelectableLabel highlight
+	selectableColor = Color3.fromRGB(66, 150, 250),
+	selectableTransparency = 0.69,
+
+	-- Toggle switch
+	toggleOnColor = Color3.fromRGB(66, 150, 250),
+	toggleOffColor = Color3.fromRGB(79, 79, 79),
+	toggleHandleColor = Color3.fromRGB(255, 255, 255),
+
+	-- Modal overlay backdrop
+	modalOverlayColor = Color3.fromRGB(0, 0, 0),
+	modalOverlayTransparency = 0.5,
+
 	-- Sizing
 	textSize = 13,
 	framePadding = Vector2.new(4, 3),

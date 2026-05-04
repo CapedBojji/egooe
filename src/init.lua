@@ -10,17 +10,32 @@ local _button = require(script.widgets.button)
 local _checkbox = require(script.widgets.checkbox)
 local _input = require(script.widgets.input)
 local _window = require(script.widgets.window)
+local _radioButton = require(script.widgets.radioButton)
+local _selectableLabel = require(script.widgets.selectableLabel)
+local _comboBox = require(script.widgets.comboBox)
+local _toggle = require(script.widgets.toggle)
+local _collapsingHeader = require(script.widgets.collapsingHeader)
+local _clickableLabel = require(script.widgets.clickableLabel)
+local _modal = require(script.widgets.modal)
 
 -- Handle types
 type ButtonHandle = _button.ButtonHandle
 type CheckboxHandle = _checkbox.CheckboxHandle
 type InputHandle = _input.InputHandle
 type WindowHandle = _window.WindowHandle
+type RadioButtonHandle = _radioButton.RadioButtonHandle
+type SelectableLabelHandle = _selectableLabel.SelectableLabelHandle
+type ComboBoxHandle = _comboBox.ComboBoxHandle
+type ToggleHandle = _toggle.ToggleHandle
+type CollapsingHeaderHandle = _collapsingHeader.CollapsingHeaderHandle
+type ClickableLabelHandle = _clickableLabel.ClickableLabelHandle
+type ModalHandle = _modal.ModalHandle
 
 -- Option types
 type ButtonOptions = { width: (UDim | number)?, disabled: boolean? }
 type CheckboxOptions = { checked: boolean?, disabled: boolean? }
 type SliderOptions = { min: number?, max: number?, initial: number?, label: string?, width: number? }
+type DragValueOptions = { min: number?, max: number?, initial: number?, step: number?, label: string? }
 type InputOptions = { text: string?, placeholder: string?, label: string? }
 type WindowOptions = {
 	title: string?,
@@ -31,12 +46,20 @@ type WindowOptions = {
 	position: Vector2?,
 }
 type LabelOptions = { textSize: number?, color: Color3?, wrapped: boolean? }
+type ClickableLabelOptions = { textSize: number?, color: Color3? }
 type HeadingOptions = { textSize: number?, font: Enum.Font? }
 type RowOptions = {
 	padding: (number | UDim)?,
 	alignment: Enum.HorizontalAlignment?,
 	verticalAlignment: Enum.VerticalAlignment?,
 }
+type RadioButtonOptions = { selected: boolean?, disabled: boolean? }
+type SelectableLabelOptions = { selected: boolean?, disabled: boolean? }
+type ComboBoxOptions = { items: { string }, selected: string?, label: string? }
+type ProgressBarOptions = { value: number, label: string? }
+type ToggleOptions = { on: boolean?, disabled: boolean? }
+type ModalOptions = { title: string?, open: boolean?, closable: boolean? }
+type PopupOptions = { open: boolean?, position: Vector2? }
 
 return {
 	-- Runtime API (Plasma-compatible)
@@ -51,6 +74,7 @@ return {
 	useInstance = Runtime.useInstance,
 	useEffect = Runtime.useEffect,
 	useKey = Runtime.useKey,
+	useRootInstance = Runtime.useRootInstance,
 	setEventCallback = Runtime.setEventCallback,
 	createContext = Runtime.createContext,
 	useContext = Runtime.useContext,
@@ -75,5 +99,18 @@ return {
 	row = require(script.widgets.row) :: (options: (RowOptions | (() -> ()))?, children: (() -> ())?) -> (),
 	space = require(script.widgets.space) :: (size: number?) -> (),
 	portal = require(script.widgets.portal) :: (targetInstance: Instance, children: () -> ()) -> (),
+
+	-- New egui-style widgets
+	radioButton = _radioButton :: (text: string, options: RadioButtonOptions?) -> RadioButtonHandle,
+	selectableLabel = _selectableLabel :: (text: string, options: SelectableLabelOptions?) -> SelectableLabelHandle,
+	comboBox = _comboBox :: (options: ComboBoxOptions) -> ComboBoxHandle,
+	dragValue = require(script.widgets.dragValue) :: (options: DragValueOptions?) -> number,
+	progressBar = require(script.widgets.progressBar) :: (options: ProgressBarOptions) -> (),
+	collapsingHeader = _collapsingHeader :: (text: string, children: () -> ()) -> CollapsingHeaderHandle,
+	toggle = _toggle :: (text: string, options: ToggleOptions?) -> ToggleHandle,
+	clickableLabel = _clickableLabel :: (text: string, options: ClickableLabelOptions?) -> ClickableLabelHandle,
+	modal = _modal :: (options: ModalOptions, children: () -> ()) -> ModalHandle,
+	popup = require(script.widgets.popup) :: (options: PopupOptions, children: () -> ()) -> (),
+
 	demoWindow = require(script.widgets.demoWindow) :: () -> (),
 }
