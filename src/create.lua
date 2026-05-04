@@ -17,7 +17,7 @@ local GUI_BASE_2D = {
 }
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@function create
 	@param className string -- The class name of the Instance to create
 	@param props table

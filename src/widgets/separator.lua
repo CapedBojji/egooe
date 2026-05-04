@@ -1,5 +1,5 @@
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@function separator
 	@tag widgets
 

@@ -78,7 +78,7 @@ local defaultStyle = {
 local Style = {}
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@function useStyle
 	@tag style
 
@@ -89,7 +89,7 @@ function Style.get()
 end
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@function setStyle
 	@tag style
 	@param styleFragment {[string]: any} -- A dictionary of style information

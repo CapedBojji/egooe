@@ -1,5 +1,5 @@
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@function row
 	@tag widgets
 	@param options {padding: number | UDim, alignment: HorizontalAlignment, verticalAlignment: VerticalAlignment}

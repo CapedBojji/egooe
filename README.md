@@ -14,7 +14,7 @@ An immediate-mode UI framework for Roblox with **Iris visual style** and a **Pla
 Install with [Wally](https://wally.run/) by adding to your `wally.toml`:
 
 ```toml
-IrisPlasma = "capedbojji/iris-plasma@0.1.0"
+EgooE = "capedbojji/iris-plasma@0.1.0"
 ```
 
 Or sync with [Rojo](https://rojo.space/) using `default.project.json`.
@@ -24,12 +24,12 @@ Or sync with [Rojo](https://rojo.space/) using `default.project.json`.
 The quickest way to see all widgets in action — just call `demoWindow()` inside your `start` loop:
 
 ```lua
-local IrisPlasma = require(path.to.IrisPlasma)
-local node = IrisPlasma.new(playerGui.ScreenGui)
+local EgooE = require(path.to.EgooE)
+local node = EgooE.new(playerGui.ScreenGui)
 
 RunService.Heartbeat:Connect(function()
-    IrisPlasma.start(node, function()
-        IrisPlasma.demoWindow()
+    EgooE.start(node, function()
+        EgooE.demoWindow()
     end)
 end)
 ```
@@ -42,25 +42,25 @@ This opens a 340×580 window covering every widget category:
 ## Quick Start
 
 ```lua
-local IrisPlasma = require(path.to.IrisPlasma)
+local EgooE = require(path.to.EgooE)
 
-local node = IrisPlasma.new(playerGui.ScreenGui)
+local node = EgooE.new(playerGui.ScreenGui)
 
 RunService.Heartbeat:Connect(function()
-    IrisPlasma.start(node, function()
-        IrisPlasma.window("Demo", function()
-            IrisPlasma.heading("Hello, Iris!")
-            IrisPlasma.separator()
-            IrisPlasma.label("This is a label.")
+    EgooE.start(node, function()
+        EgooE.window("Demo", function()
+            EgooE.heading("Hello, Iris!")
+            EgooE.separator()
+            EgooE.label("This is a label.")
 
-            if IrisPlasma.button("Click me"):clicked() then
+            if EgooE.button("Click me"):clicked() then
                 print("Button clicked!")
             end
 
-            local checked = IrisPlasma.checkbox("Toggle me"):checked()
-            local value   = IrisPlasma.slider({ min = 0, max = 100, label = "Speed" })
+            local checked = EgooE.checkbox("Toggle me"):checked()
+            local value   = EgooE.slider({ min = 0, max = 100, label = "Speed" })
 
-            local handle = IrisPlasma.input({ placeholder = "Type something..." })
+            local handle = EgooE.input({ placeholder = "Type something..." })
             if handle:changed() then
                 print("Input:", handle:value())
             end
@@ -91,10 +91,10 @@ end)
 The Iris dark theme is applied by default. Override any values per-scope with `setStyle`:
 
 ```lua
-IrisPlasma.setStyle({
+EgooE.setStyle({
     buttonColor = Color3.fromRGB(200, 60, 60),
 })
-IrisPlasma.button("Danger")
+EgooE.button("Danger")
 ```
 
 ## API
@@ -102,16 +102,16 @@ IrisPlasma.button("Danger")
 Identical to [Plasma](https://github.com/matter-ecs/plasma):
 
 ```lua
-IrisPlasma.new(rootInstance)
-IrisPlasma.start(node, fn)
-IrisPlasma.beginFrame(node, fn) / continueFrame(handle, fn) / finishFrame(node)
-IrisPlasma.scope(fn)
-IrisPlasma.widget(fn)
-IrisPlasma.useState(initial)
-IrisPlasma.useInstance(creator)
-IrisPlasma.useEffect(callback, ...deps)
-IrisPlasma.useKey(key)
-IrisPlasma.createContext(name) / provideContext(ctx, val) / useContext(ctx)
-IrisPlasma.useStyle() / setStyle(fragment)
+EgooE.new(rootInstance)
+EgooE.start(node, fn)
+EgooE.beginFrame(node, fn) / continueFrame(handle, fn) / finishFrame(node)
+EgooE.scope(fn)
+EgooE.widget(fn)
+EgooE.useState(initial)
+EgooE.useInstance(creator)
+EgooE.useEffect(callback, ...deps)
+EgooE.useKey(key)
+EgooE.createContext(name) / provideContext(ctx, val) / useContext(ctx)
+EgooE.useStyle() / setStyle(fragment)
 ```
 

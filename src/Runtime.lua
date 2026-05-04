@@ -81,7 +81,7 @@ end
 local Runtime = {}
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@param rootInstance Instance -- The root instance of which to mount all children. Likely a ScreenGui.
 	@return Node -- An opaque object which holds persistent state about your UI.
 ]=]
@@ -92,7 +92,7 @@ function Runtime.new(rootInstance: Instance): Node
 end
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@param name string -- The human-readable name of the context. This is only for debug purposes.
 	@return Context -- An opaque Context object which holds persistent state.
 
@@ -100,7 +100,7 @@ end
 	through every child as props.
 ]=]
 function Runtime.createContext(name: string)
-	local fullName = string.format("IrisPlasmaContext(%s)", name)
+	local fullName = string.format("EgooEContext(%s)", name)
 	return setmetatable({}, {
 		__tostring = function()
 			return fullName
@@ -109,7 +109,7 @@ function Runtime.createContext(name: string)
 end
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@param context Context -- A context object previously created with `createContext`
 	@return T
 	@tag hooks
@@ -129,7 +129,7 @@ function Runtime.useContext(context)
 end
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@param context Context -- A context object previously created with `createContext`
 	@param value T -- Any value you want to provide for this context
 
@@ -141,7 +141,7 @@ function Runtime.provideContext(context, value)
 end
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@param callback () -> () | () -> () -> () -- A callback function that optionally returns a cleanup function
 	@param ... any -- Dependencies
 	@tag hooks
@@ -189,7 +189,7 @@ function Runtime.useEffect(callback: () -> () | () -> () -> (), ...)
 end
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@param initialValue T -- The value this hook returns if the set callback has never been called
 	@return T -- The previously set value, or the initial value if none has been set
 	@return (newValue: T) -> () -- A function which when called stores the value in this hook for the next run
@@ -222,7 +222,7 @@ function Runtime.useState<T>(initialValue: T): (T, (newValue: T) -> ())
 end
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@param key
 
 	Specify a key by which to store all future state in this scope.
@@ -234,7 +234,7 @@ function Runtime.useKey(key: string | number)
 end
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@param creator (ref: {[string]: Instance}) -> (Instance, Instance?) -- A callback which creates the widget's instances. `ref` is a table you can key-assign inside `create(...)` to capture named instances. Returns the root instance and an optional container instance (used as the parent for child widgets instead of the root).
 	@return {[string]: Instance} -- The `ref` table populated by `creator`, keyed by the names you assigned inside `create(...)`.
 	@tag hooks
@@ -310,7 +310,7 @@ local function scope(level, scopeKey, fn, ...)
 	if coroutine.status(thread) ~= "dead" then
 		success = false
 		widgetHandle =
-			"IrisPlasma: Widget handler yielded! Yielding is not allowed. The handler thread will be closed."
+			"EgooE: Widget handler yielded! Yielding is not allowed. The handler thread will be closed."
 
 		coroutine.close(thread)
 	end
@@ -325,7 +325,7 @@ local function scope(level, scopeKey, fn, ...)
 
 		if not recentErrors[errorValue] then
 			task.spawn(error, tostring(errorValue))
-			warn("IrisPlasma: The above error will be suppressed for the next 10 seconds")
+			warn("EgooE: The above error will be suppressed for the next 10 seconds")
 			recentErrors[errorValue] = true
 		end
 
@@ -347,7 +347,7 @@ local function scope(level, scopeKey, fn, ...)
 end
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@param rootNode Node -- A node created by `new`.
 	@param fn (...: T) -> ()
 	@param ... T -- Additional parameters to `callback`
@@ -361,7 +361,7 @@ function Runtime.start(rootNode: Node, fn, ...)
 end
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@param rootNode Node -- A node created by `new`.
 	@param fn (...: T) -> ()
 	@param ... T -- Additional parameters to `callback`
@@ -374,7 +374,7 @@ function Runtime.beginFrame(rootNode: Node, fn, ...)
 		error("Runtime.start cannot be called while Runtime.start is already running", 2)
 	end
 
-	debug.profilebegin("IrisPlasma")
+	debug.profilebegin("EgooE")
 
 	if rootNode.generation == 0 then
 		rootNode.generation = 1
@@ -393,7 +393,7 @@ end
 
 --[=[
 	Finishes a continuable frame.
-	@within IrisPlasma
+	@within EgooE
 	@param rootNode Node -- A node created by `new`.
 ]=]
 function Runtime.finishFrame(rootNode: Node)
@@ -408,7 +408,7 @@ end
 --[=[
 	Continue the frame with a new handler function.
 
-	@within IrisPlasma
+	@within EgooE
 	@param continueHandle ContinueHandle -- An object returned by beginFrame
 	@param fn (...: T) -> ()
 	@param ... T -- Additional parameters to `callback`
@@ -426,7 +426,7 @@ function Runtime.continueFrame(continueHandle, fn, ...)
 end
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@param fn (...: T) -> ()
 	@param ... T -- Additional parameters to `callback`
 
@@ -437,7 +437,7 @@ function Runtime.scope(fn, ...)
 end
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@param fn (...: T) -> () -- The widget function
 	@return (...: T) -> () -- A function which can be called to create the widget
 

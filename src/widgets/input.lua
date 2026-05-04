@@ -5,7 +5,7 @@ export type InputHandle = {
 }
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@function input
 	@tag widgets
 	@param options {text: string, placeholder: string, label: string}

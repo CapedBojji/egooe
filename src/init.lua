@@ -1,4 +1,4 @@
---- @class IrisPlasma
+--- @class EgooE
 -- An immediate-mode UI framework for Roblox with Iris visual style and Plasma-compatible API.
 -- No automatic sizing: all widgets use explicit sizes.
 

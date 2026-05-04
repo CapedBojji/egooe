@@ -1,5 +1,5 @@
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@function slider
 	@tag widgets
 	@param options {min: number, max: number, initial: number, label: string, width: number}

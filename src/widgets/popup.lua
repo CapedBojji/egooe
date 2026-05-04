@@ -80,7 +80,6 @@ return Runtime.widget(function(options, fn)
 		end
 	end)
 
-	print("[Popup] open=", open, "popupPanel=", refs.popupPanel ~= nil)
 	if refs.popupPanel then
 		refs.popupPanel.Visible = open
 
@@ -97,7 +96,6 @@ return Runtime.widget(function(options, fn)
 			end
 
 			if refs.popupContent then
-				print("[Popup] rendering children into popupContent", refs.popupContent:GetFullName())
 				Runtime.scope(function()
 					Runtime.useInstance(function()
 						return nil, refs.popupContent
