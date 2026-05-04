@@ -200,7 +200,6 @@ return Runtime.widget(function(options)
 						end
 					end)
 					itemBtn.Activated:Connect(function()
-						print("[ComboBox] Selected:", capturedItem)
 						setSelectedValue(capturedItem)
 						setChanged(true)
 						setIsOpen(false)
