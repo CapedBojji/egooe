@@ -798,7 +798,7 @@ end
 
 ### collapsingHeader
 
-A togglable section header that shows/hides its children.
+A toggleable section header that shows/hides its children.
 
 **Signature**
 ```
