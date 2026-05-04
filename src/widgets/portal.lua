@@ -1,5 +1,5 @@
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@function portal
 	@tag widgets
 	@param targetInstance Instance -- Where the portal mounts its children

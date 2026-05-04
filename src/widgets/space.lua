@@ -1,5 +1,5 @@
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@function space
 	@tag widgets
 	@param size number -- Size in pixels for the blank space

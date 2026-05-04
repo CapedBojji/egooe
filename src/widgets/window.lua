@@ -1,7 +1,7 @@
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@interface WindowOptions
-	@within IrisPlasma
+	@within EgooE
 
 	.title? string -- Window title
 	.closable? boolean -- Show close button
@@ -12,7 +12,7 @@
 ]=]
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@function window
 	@tag widgets
 	@param options string | WindowOptions -- Title string or options table

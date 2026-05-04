@@ -4,7 +4,7 @@ export type CheckboxHandle = {
 }
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@function checkbox
 	@tag widgets
 	@param text string -- Label displayed next to the checkbox

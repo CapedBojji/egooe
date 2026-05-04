@@ -1,5 +1,5 @@
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@function heading
 	@tag widgets
 	@param text string -- The heading text

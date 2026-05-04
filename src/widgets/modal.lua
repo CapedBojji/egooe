@@ -16,7 +16,7 @@ return Runtime.widget(function(options, fn)
 	local open = options.open ~= false
 	local closedSignal, setClosedSignal = Runtime.useState(false)
 
-	-- Zero-size placeholder keeps the node alive in the IrisPlasma tree
+	-- Zero-size placeholder keeps the node alive in the EgooE tree
 	local refs = Runtime.useInstance(function(ref)
 		local placeholder = Instance.new("Frame")
 		placeholder.Name = "ModalPlaceholder"

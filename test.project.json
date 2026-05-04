@@ -28,14 +28,14 @@
             }
         },
         "ReplicatedStorage": {
-            "IrisPlasma": {
+            "EgooE": {
                 "$path": "default.project.json"
             }
         },
         "StarterPlayer": {
             "StarterPlayerScripts": {
-                "IrisPlasmaDemo": {
-                    "$path": "test/IrisPlasmaDemo.client.lua"
+                "EgooEDemo": {
+                    "$path": "test/EgooEDemo.client.lua"
                 }
             }
         }

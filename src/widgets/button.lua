@@ -3,7 +3,7 @@ export type ButtonHandle = {
 }
 
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@function button
 	@tag widgets
 	@param text string -- The label on the button

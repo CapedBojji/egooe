@@ -1,5 +1,5 @@
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@function demoWindow
 	@tag widgets
 
@@ -7,8 +7,8 @@
 	Call this once per frame inside a `start` loop to display the demo.
 
 	```lua
-	IrisPlasma.start(node, function()
-		IrisPlasma.demoWindow()
+	EgooE.start(node, function()
+		EgooE.demoWindow()
 	end)
 	```
 ]=]

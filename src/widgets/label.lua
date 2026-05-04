@@ -1,5 +1,5 @@
 --[=[
-	@within IrisPlasma
+	@within EgooE
 	@function label
 	@tag widgets
 	@param text string -- The text to display
