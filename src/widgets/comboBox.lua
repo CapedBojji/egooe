@@ -17,6 +17,14 @@ return Runtime.widget(function(options)
 	local initialSelected = options.selected or (items[1] or "")
 
 	local selectedValue, setSelectedValue = Runtime.useState(initialSelected)
+	local selectedIndex, setSelectedIndex = Runtime.useState(function()
+		for i, item in ipairs(items) do
+			if item == initialSelected then
+				return i
+			end
+		end
+		return nil
+	end)
 	local changed, setChanged = Runtime.useState(false)
 	local isOpen, setIsOpen = Runtime.useState(false)
 	local hovered, setHovered = Runtime.useState(false)
@@ -163,7 +171,12 @@ return Runtime.widget(function(options)
 			refs.dropdown.Size = UDim2.new(0, absSize.X, 0, 0)
 
 			-- Build item buttons once (only if not already built for this set of items)
-			local existingCount = #refs.dropdown:GetChildren() - 3 -- subtract UICorner + UIStroke + UIListLayout
+			local existingCount = 0
+			for _, child in ipairs(refs.dropdown:GetChildren()) do
+				if child:IsA("TextButton") then
+					existingCount += 1
+				end
+			end
 			if existingCount ~= #items then
 				for _, child in ipairs(refs.dropdown:GetChildren()) do
 					if child:IsA("TextButton") then
@@ -190,17 +203,19 @@ return Runtime.widget(function(options)
 					itemPadding.PaddingRight = UDim.new(0, 8)
 					itemPadding.Parent = itemBtn
 
+					local capturedIndex = i
 					local capturedItem = item
 					itemBtn.MouseEnter:Connect(function()
-						refs.hoveredItem = capturedItem
+						refs.hoveredItem = capturedIndex
 					end)
 					itemBtn.MouseLeave:Connect(function()
-						if refs.hoveredItem == capturedItem then
+						if refs.hoveredItem == capturedIndex then
 							refs.hoveredItem = nil
 						end
 					end)
 					itemBtn.Activated:Connect(function()
 						setSelectedValue(capturedItem)
+						setSelectedIndex(capturedIndex)
 						setChanged(true)
 						setIsOpen(false)
 					end)
@@ -212,8 +227,9 @@ return Runtime.widget(function(options)
 			-- Update highlight for current selection and hover each frame
 			for _, child in ipairs(refs.dropdown:GetChildren()) do
 				if child:IsA("TextButton") then
-					local isSelected = child.Text == selectedValue
-					local isHovered = refs.hoveredItem == child.Text
+					local childIndex = child.LayoutOrder
+					local isSelected = childIndex == selectedIndex
+					local isHovered = refs.hoveredItem == childIndex
 					if isSelected then
 						child.BackgroundColor3 = style.frameBgHoveredColor
 						child.BackgroundTransparency = 0.5

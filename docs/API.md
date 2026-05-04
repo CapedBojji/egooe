@@ -1,6 +1,6 @@
-# egooe API Reference
+# IrisPlasma API Reference
 
-egooe is an immediate-mode UI framework for Roblox. Every frame you call widget functions in order; the framework diffs the result and updates the GUI instances for you. State persists across frames via hooks.
+IrisPlasma is an immediate-mode UI framework for Roblox. Every frame you call widget functions in order; the framework diffs the result and updates the GUI instances for you. State persists across frames via hooks.
 
 ---
 
@@ -43,12 +43,12 @@ egooe is an immediate-mode UI framework for Roblox. Every frame you call widget 
 
 ## Setup
 
-Require egooe from `ReplicatedStorage` and create a root node tied to a `ScreenGui`.
+Require IrisPlasma from `ReplicatedStorage` and create a root node tied to a `ScreenGui`.
 
 ```lua
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local egooe = require(ReplicatedStorage.egooe)
+local IrisPlasma = require(ReplicatedStorage.IrisPlasma)
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
@@ -58,23 +58,23 @@ screenGui.ResetOnSpawn = false
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screenGui.Parent = playerGui
 
-local node = egooe.new(screenGui)
+local node = IrisPlasma.new(screenGui)
 ```
 
 ---
 
 ## Frame Loop
 
-Call `egooe.start` once per frame (typically inside `RunService.Heartbeat` or `RunService.RenderStepped`) passing the root node and a render function.
+Call `IrisPlasma.start` once per frame (typically inside `RunService.Heartbeat` or `RunService.RenderStepped`) passing the root node and a render function.
 
 ```lua
 local RunService = game:GetService("RunService")
 
 RunService.Heartbeat:Connect(function()
-    egooe.start(node, function()
+    IrisPlasma.start(node, function()
         -- call widgets here
-        egooe.window("My Window", function()
-            egooe.label("Hello, world!")
+        IrisPlasma.window("My Window", function()
+            IrisPlasma.label("Hello, world!")
         end)
     end)
 end)
@@ -91,13 +91,13 @@ Hooks must be called in the same order every frame (same rules as React hooks �
 ### useState
 
 ```lua
-local value, setValue = egooe.useState(initialValue)
+local value, setValue = IrisPlasma.useState(initialValue)
 ```
 
 Persists a value across frames. `setValue` can take a plain value or an updater function.
 
 ```lua
-local count, setCount = egooe.useState(0)
+local count, setCount = IrisPlasma.useState(0)
 
 -- plain value
 setCount(count + 1)
@@ -111,7 +111,7 @@ end)
 ### useEffect
 
 ```lua
-egooe.useEffect(callback, ...dependencies)
+IrisPlasma.useEffect(callback, ...dependencies)
 ```
 
 Runs `callback` once when it is first encountered, and again whenever any dependency changes. If `callback` returns a function, that function is called for cleanup before the next run or on destroy.
@@ -119,7 +119,7 @@ Runs `callback` once when it is first encountered, and again whenever any depend
 With no dependencies the callback only runs once (on mount):
 
 ```lua
-egooe.useEffect(function()
+IrisPlasma.useEffect(function()
     local connection = someEvent:Connect(handler)
     return function()
         connection:Disconnect()
@@ -130,7 +130,7 @@ end)
 With dependencies it re-runs when they change:
 
 ```lua
-egooe.useEffect(function()
+IrisPlasma.useEffect(function()
     print("theme changed to", theme)
 end, theme)
 ```
@@ -138,7 +138,7 @@ end, theme)
 ### useInstance
 
 ```lua
-local refs = egooe.useInstance(function(ref)
+local refs = IrisPlasma.useInstance(function(ref)
     -- create instances here (runs ONCE, never again)
     local frame = Instance.new("Frame")
     ref.myFrame = frame   -- capture named refs
@@ -151,28 +151,28 @@ The returned `refs` table is the same object every frame. Use it to read or writ
 ### useKey
 
 ```lua
-egooe.useKey(key)
+IrisPlasma.useKey(key)
 ```
 
 Ties all subsequent state in this scope to `key`. Useful when rendering the same widget type in a loop so each iteration gets its own independent state.
 
 ```lua
 for i, item in ipairs(items) do
-    egooe.useKey(item.id)
-    egooe.button(item.name)
+    IrisPlasma.useKey(item.id)
+    IrisPlasma.button(item.name)
 end
 ```
 
 ### Context
 
 ```lua
-local MyContext = egooe.createContext("MyContext")
+local MyContext = IrisPlasma.createContext("MyContext")
 
 -- parent widget
-egooe.provideContext(MyContext, someValue)
+IrisPlasma.provideContext(MyContext, someValue)
 
 -- descendant widget
-local value = egooe.useContext(MyContext)
+local value = IrisPlasma.useContext(MyContext)
 ```
 
 Passes values down the widget tree without threading them through every function argument.
@@ -183,10 +183,10 @@ Passes values down the widget tree without threading them through every function
 
 ```lua
 -- read current style
-local style = egooe.useStyle()
+local style = IrisPlasma.useStyle()
 
 -- override style (call before first frame, or to hot-swap)
-egooe.setStyle({
+IrisPlasma.setStyle({
     textColor = Color3.fromRGB(255, 255, 255),
     textSize = 14,
     -- ...
@@ -230,10 +230,10 @@ window(options: string | WindowOptions, children: () -> ()) -> WindowHandle
 local windowOpen = true
 
 RunService.Heartbeat:Connect(function()
-    egooe.start(node, function()
+    IrisPlasma.start(node, function()
         if not windowOpen then return end
 
-        local w = egooe.window({
+        local w = IrisPlasma.window({
             title = "Settings",
             closable = true,
             movable = true,
@@ -241,7 +241,7 @@ RunService.Heartbeat:Connect(function()
             size = Vector2.new(300, 400),
             position = Vector2.new(40, 40),
         }, function()
-            egooe.label("Window content goes here.")
+            IrisPlasma.label("Window content goes here.")
         end)
 
         if w:closed() then
@@ -277,17 +277,17 @@ button(text: string, options?: ButtonOptions) -> ButtonHandle
 
 **Example**
 ```lua
-local clickCount, setClickCount = egooe.useState(0)
+local clickCount, setClickCount = IrisPlasma.useState(0)
 
-if egooe.button("Click me!"):clicked() then
+if IrisPlasma.button("Click me!"):clicked() then
     setClickCount(clickCount + 1)
 end
-egooe.label("Clicked " .. clickCount .. " time(s)")
+IrisPlasma.label("Clicked " .. clickCount .. " time(s)")
 
 -- fixed-width buttons side by side
-egooe.row(function()
-    egooe.button("OK", { width = 80 })
-    egooe.button("Cancel", { width = 80, disabled = true })
+IrisPlasma.row(function()
+    IrisPlasma.button("OK", { width = 80 })
+    IrisPlasma.button("Cancel", { width = 80, disabled = true })
 end)
 ```
 
@@ -318,14 +318,14 @@ checkbox(text: string, options?: CheckboxOptions) -> CheckboxHandle
 
 **Example**
 ```lua
-local enabled, setEnabled = egooe.useState(false)
+local enabled, setEnabled = IrisPlasma.useState(false)
 
-if egooe.checkbox("Enable shadows", { checked = enabled }):clicked() then
+if IrisPlasma.checkbox("Enable shadows", { checked = enabled }):clicked() then
     setEnabled(not enabled)
 end
 
 -- uncontrolled — manages its own state internally
-egooe.checkbox("Standalone toggle")
+IrisPlasma.checkbox("Standalone toggle")
 ```
 
 ---
@@ -356,15 +356,15 @@ radioButton(text: string, options?: RadioButtonOptions) -> RadioButtonHandle
 **Example**
 ```lua
 local choices = { "Low", "Medium", "High" }
-local quality, setQuality = egooe.useState("Medium")
+local quality, setQuality = IrisPlasma.useState("Medium")
 
 for _, option in ipairs(choices) do
     local captured = option
-    if egooe.radioButton(option, { selected = quality == option }):clicked() then
+    if IrisPlasma.radioButton(option, { selected = quality == option }):clicked() then
         setQuality(captured)
     end
 end
-egooe.label("Quality: " .. quality)
+IrisPlasma.label("Quality: " .. quality)
 ```
 
 ---
@@ -395,17 +395,17 @@ selectableLabel(text: string, options?: SelectableLabelOptions) -> SelectableLab
 **Example**
 ```lua
 local tabs = { "General", "Advanced", "About" }
-local activeTab, setActiveTab = egooe.useState("General")
+local activeTab, setActiveTab = IrisPlasma.useState("General")
 
-egooe.row(function()
+IrisPlasma.row(function()
     for _, tab in ipairs(tabs) do
         local captured = tab
-        if egooe.selectableLabel(tab, { selected = activeTab == tab }):clicked() then
+        if IrisPlasma.selectableLabel(tab, { selected = activeTab == tab }):clicked() then
             setActiveTab(captured)
         end
     end
 end)
-egooe.label("Active tab: " .. activeTab)
+IrisPlasma.label("Active tab: " .. activeTab)
 ```
 
 ---
@@ -435,16 +435,16 @@ comboBox(options: ComboBoxOptions) -> ComboBoxHandle
 
 **Example**
 ```lua
-local resolution, setResolution = egooe.useState("1080p")
+local resolution, setResolution = IrisPlasma.useState("1080p")
 
-local combo = egooe.comboBox({
+local combo = IrisPlasma.comboBox({
     items = { "720p", "1080p", "1440p", "4K" },
     selected = "1080p",
 })
 if combo:changed() then
     setResolution(combo:value())
 end
-egooe.label("Resolution: " .. resolution)
+IrisPlasma.label("Resolution: " .. resolution)
 ```
 
 ---
@@ -473,11 +473,11 @@ Passing a plain number is shorthand for `{ max = number }`.
 
 **Example**
 ```lua
-local volume, setVolume = egooe.useState(0.5)
+local volume, setVolume = IrisPlasma.useState(0.5)
 
-local v = egooe.slider({ min = 0, max = 1, initial = volume, label = "Volume" })
+local v = IrisPlasma.slider({ min = 0, max = 1, initial = volume, label = "Volume" })
 setVolume(v)
-egooe.label(string.format("%.0f%%", volume * 100))
+IrisPlasma.label(string.format("%.0f%%", volume * 100))
 ```
 
 ---
@@ -505,9 +505,9 @@ dragValue(options?: DragValueOptions) -> number
 
 **Example**
 ```lua
-local speed, setSpeed = egooe.useState(10)
+local speed, setSpeed = IrisPlasma.useState(10)
 
-local v = egooe.dragValue({ min = 0, max = 200, initial = speed, step = 1, label = "Speed" })
+local v = IrisPlasma.dragValue({ min = 0, max = 200, initial = speed, step = 1, label = "Speed" })
 setSpeed(v)
 ```
 
@@ -531,16 +531,16 @@ progressBar(options: ProgressBarOptions) -> ()
 
 **Example**
 ```lua
-local progress, setProgress = egooe.useState(0)
+local progress, setProgress = IrisPlasma.useState(0)
 
-egooe.progressBar({ value = progress })
-egooe.label(math.floor(progress * 100) .. "% complete")
+IrisPlasma.progressBar({ value = progress })
+IrisPlasma.label(math.floor(progress * 100) .. "% complete")
 
-egooe.row(function()
-    if egooe.button("−10%", { width = 60 }):clicked() then
+IrisPlasma.row(function()
+    if IrisPlasma.button("−10%", { width = 60 }):clicked() then
         setProgress(math.max(0, progress - 0.1))
     end
-    if egooe.button("+10%", { width = 60 }):clicked() then
+    if IrisPlasma.button("+10%", { width = 60 }):clicked() then
         setProgress(math.min(1, progress + 0.1))
     end
 end)
@@ -573,13 +573,13 @@ toggle(text: string, options?: ToggleOptions) -> ToggleHandle
 
 **Example**
 ```lua
-local darkMode, setDarkMode = egooe.useState(false)
+local darkMode, setDarkMode = IrisPlasma.useState(false)
 
-if egooe.toggle("Dark mode", { on = darkMode }):clicked() then
+if IrisPlasma.toggle("Dark mode", { on = darkMode }):clicked() then
     setDarkMode(not darkMode)
 end
 
-egooe.toggle("Unavailable feature", { on = false, disabled = true })
+IrisPlasma.toggle("Unavailable feature", { on = false, disabled = true })
 ```
 
 ---
@@ -611,10 +611,10 @@ input(options?: InputOptions) -> InputHandle
 
 **Example**
 ```lua
-local text, setText = egooe.useState("")
-local submitted, setSubmitted = egooe.useState("")
+local text, setText = IrisPlasma.useState("")
+local submitted, setSubmitted = IrisPlasma.useState("")
 
-local handle = egooe.input({ placeholder = "Search...", label = "Query" })
+local handle = IrisPlasma.input({ placeholder = "Search...", label = "Query" })
 if handle:changed() then
     setText(handle:value())
 end
@@ -622,10 +622,10 @@ if handle:submitted() then
     setSubmitted("Searched: " .. handle:value())
 end
 if text ~= "" then
-    egooe.label("Live: " .. text)
+    IrisPlasma.label("Live: " .. text)
 end
 if submitted ~= "" then
-    egooe.label(submitted)
+    IrisPlasma.label(submitted)
 end
 ```
 
@@ -650,9 +650,9 @@ label(text: string, options?: LabelOptions) -> ()
 
 **Example**
 ```lua
-egooe.label("Normal text")
-egooe.label("Warning!", { color = Color3.fromRGB(255, 180, 0) })
-egooe.label("A very long sentence that needs to wrap at the edge of the window.", { wrapped = true })
+IrisPlasma.label("Normal text")
+IrisPlasma.label("Warning!", { color = Color3.fromRGB(255, 180, 0) })
+IrisPlasma.label("A very long sentence that needs to wrap at the edge of the window.", { wrapped = true })
 ```
 
 ---
@@ -675,9 +675,9 @@ heading(text: string, options?: HeadingOptions) -> ()
 
 **Example**
 ```lua
-egooe.heading("Controls")
-egooe.separator()
-egooe.label("Press W to move forward.")
+IrisPlasma.heading("Controls")
+IrisPlasma.separator()
+IrisPlasma.label("Press W to move forward.")
 ```
 
 ---
@@ -693,11 +693,11 @@ separator() -> ()
 
 **Example**
 ```lua
-egooe.heading("Section A")
-egooe.separator()
-egooe.label("First item")
-egooe.separator()
-egooe.label("Second item")
+IrisPlasma.heading("Section A")
+IrisPlasma.separator()
+IrisPlasma.label("First item")
+IrisPlasma.separator()
+IrisPlasma.label("Second item")
 ```
 
 ---
@@ -717,9 +717,9 @@ space(size?: number) -> ()
 
 **Example**
 ```lua
-egooe.label("Top section")
-egooe.space(16)
-egooe.label("Bottom section, further away")
+IrisPlasma.label("Top section")
+IrisPlasma.space(16)
+IrisPlasma.label("Bottom section, further away")
 ```
 
 ---
@@ -746,16 +746,16 @@ Passing the children function directly (skipping options) is the most common usa
 **Example**
 ```lua
 -- simple row
-egooe.row(function()
-    egooe.button("Save", { width = 80 })
-    egooe.button("Discard", { width = 80 })
+IrisPlasma.row(function()
+    IrisPlasma.button("Save", { width = 80 })
+    IrisPlasma.button("Discard", { width = 80 })
 end)
 
 -- row with custom padding and alignment
-egooe.row({ padding = 4, alignment = Enum.HorizontalAlignment.Center }, function()
-    egooe.button("A", { width = 60 })
-    egooe.button("B", { width = 60 })
-    egooe.button("C", { width = 60 })
+IrisPlasma.row({ padding = 4, alignment = Enum.HorizontalAlignment.Center }, function()
+    IrisPlasma.button("A", { width = 60 })
+    IrisPlasma.button("B", { width = 60 })
+    IrisPlasma.button("C", { width = 60 })
 end)
 ```
 
@@ -785,11 +785,11 @@ clickableLabel(text: string, options?: ClickableLabelOptions) -> ClickableLabelH
 
 **Example**
 ```lua
-if egooe.clickableLabel("Open documentation →"):clicked() then
+if IrisPlasma.clickableLabel("Open documentation →"):clicked() then
     -- handle click
 end
 
-if egooe.clickableLabel("Delete account", { color = Color3.fromRGB(220, 60, 60) }):clicked() then
+if IrisPlasma.clickableLabel("Delete account", { color = Color3.fromRGB(220, 60, 60) }):clicked() then
     -- handle click
 end
 ```
@@ -813,14 +813,14 @@ collapsingHeader(text: string, children: () -> ()) -> CollapsingHeaderHandle
 
 **Example**
 ```lua
-egooe.collapsingHeader("Advanced Settings", function()
-    egooe.label("These settings are for experts only.")
-    egooe.slider({ min = 0, max = 10, label = "Debug Level" })
+IrisPlasma.collapsingHeader("Advanced Settings", function()
+    IrisPlasma.label("These settings are for experts only.")
+    IrisPlasma.slider({ min = 0, max = 10, label = "Debug Level" })
 end)
 
 -- check open state
-local h = egooe.collapsingHeader("Stats", function()
-    egooe.label("FPS: 60")
+local h = IrisPlasma.collapsingHeader("Stats", function()
+    IrisPlasma.label("FPS: 60")
 end)
 if h:open() then
     -- section is expanded
@@ -847,19 +847,19 @@ popup(options: PopupOptions, children: () -> ()) -> ()
 
 **Example**
 ```lua
-local showPopup, setShowPopup = egooe.useState(false)
+local showPopup, setShowPopup = IrisPlasma.useState(false)
 
-if egooe.button(showPopup and "Close" or "Options"):clicked() then
+if IrisPlasma.button(showPopup and "Close" or "Options"):clicked() then
     setShowPopup(not showPopup)
 end
 
-egooe.popup({ open = showPopup }, function()
-    egooe.label("Popup menu")
-    egooe.separator()
-    if egooe.clickableLabel("Action A"):clicked() then
+IrisPlasma.popup({ open = showPopup }, function()
+    IrisPlasma.label("Popup menu")
+    IrisPlasma.separator()
+    if IrisPlasma.clickableLabel("Action A"):clicked() then
         setShowPopup(false)
     end
-    if egooe.clickableLabel("Action B"):clicked() then
+    if IrisPlasma.clickableLabel("Action B"):clicked() then
         setShowPopup(false)
     end
 end)
@@ -892,27 +892,27 @@ modal(options: ModalOptions, children: () -> ()) -> ModalHandle
 
 **Example**
 ```lua
-local showModal, setShowModal = egooe.useState(false)
-local result, setResult = egooe.useState("")
+local showModal, setShowModal = IrisPlasma.useState(false)
+local result, setResult = IrisPlasma.useState("")
 
-if egooe.button("Open dialog"):clicked() then
+if IrisPlasma.button("Open dialog"):clicked() then
     setShowModal(true)
     setResult("")
 end
 
 if result ~= "" then
-    egooe.label("You chose: " .. result)
+    IrisPlasma.label("You chose: " .. result)
 end
 
-local m = egooe.modal({ title = "Confirm", open = showModal, closable = true }, function()
-    egooe.label("Are you sure you want to continue?")
-    egooe.space(6)
-    egooe.row(function()
-        if egooe.button("Yes", { width = 80 }):clicked() then
+local m = IrisPlasma.modal({ title = "Confirm", open = showModal, closable = true }, function()
+    IrisPlasma.label("Are you sure you want to continue?")
+    IrisPlasma.space(6)
+    IrisPlasma.row(function()
+        if IrisPlasma.button("Yes", { width = 80 }):clicked() then
             setShowModal(false)
             setResult("Yes")
         end
-        if egooe.button("No", { width = 80 }):clicked() then
+        if IrisPlasma.button("No", { width = 80 }):clicked() then
             setShowModal(false)
             setResult("No")
         end
@@ -938,8 +938,8 @@ demoWindow() -> ()
 **Example**
 ```lua
 RunService.Heartbeat:Connect(function()
-    egooe.start(node, function()
-        egooe.demoWindow()
+    IrisPlasma.start(node, function()
+        IrisPlasma.demoWindow()
     end)
 end)
 ```
@@ -948,20 +948,20 @@ end)
 
 ## Building Custom Widgets
 
-Use `egooe.widget` to create reusable widget functions. The wrapped function receives a new scope automatically, allowing it to call hooks.
+Use `IrisPlasma.widget` to create reusable widget functions. The wrapped function receives a new scope automatically, allowing it to call hooks.
 
 ```lua
-local egooe = require(ReplicatedStorage.egooe)
-local Runtime = egooe   -- same table; all hooks are on it
+local IrisPlasma = require(ReplicatedStorage.IrisPlasma)
+local Runtime = IrisPlasma   -- same table; all hooks are on it
 
 -- A labeled number display that flashes red when value exceeds a threshold
-local alertValue = egooe.widget(function(options)
+local alertValue = IrisPlasma.widget(function(options)
     options = options or {}
     local value = options.value or 0
     local threshold = options.threshold or 100
 
-    local refs = egooe.useInstance(function(ref)
-        local style = egooe.useStyle()
+    local refs = IrisPlasma.useInstance(function(ref)
+        local style = IrisPlasma.useStyle()
         local frame = Instance.new("Frame")
         frame.BackgroundTransparency = 1
         frame.Size = UDim2.new(1, 0, 0, style.itemHeight)
@@ -978,7 +978,7 @@ local alertValue = egooe.widget(function(options)
         return frame
     end)
 
-    local style = egooe.useStyle()
+    local style = IrisPlasma.useStyle()
     refs.lbl.Text = (options.label or "Value") .. ": " .. tostring(value)
     refs.lbl.TextColor3 = value > threshold
         and Color3.fromRGB(255, 80, 80)
