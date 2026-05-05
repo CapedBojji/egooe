@@ -78,6 +78,15 @@ return Runtime.widget(function()
 	-- Popup
 	local showPopup, setShowPopup = Runtime.useState(false)
 
+	-- Window options demo
+	local demoWinOpen, setDemoWinOpen       = Runtime.useState(true)
+	local winClosable, setWinClosable       = Runtime.useState(true)
+	local winMinimizable, setWinMinimizable = Runtime.useState(false)
+	local winMovable, setWinMovable         = Runtime.useState(true)
+	local winResizable, setWinResizable     = Runtime.useState(true)
+	local winScrollX, setWinScrollX         = Runtime.useState(false)
+	local winScrollY, setWinScrollY         = Runtime.useState(true)
+
 	-- ── main demo window ───────────────────────────────────────────────────────
 
 	window({
@@ -329,5 +338,47 @@ return Runtime.widget(function()
 			setShowModal(false)
 		end
 
+		space(6)
+
+		-- ── Window Options ────────────────────────────────────────────────────
+		heading("Window")
+		separator()
+
+		if checkbox("closable",    { checked = winClosable }):clicked()    then setWinClosable(not winClosable)       end
+		if checkbox("minimizable", { checked = winMinimizable }):clicked() then setWinMinimizable(not winMinimizable) end
+		if checkbox("movable",     { checked = winMovable }):clicked()     then setWinMovable(not winMovable)         end
+		if checkbox("resizable",   { checked = winResizable }):clicked()   then setWinResizable(not winResizable)     end
+		if checkbox("scrollX",     { checked = winScrollX }):clicked()     then setWinScrollX(not winScrollX)         end
+		if checkbox("scrollY",     { checked = winScrollY }):clicked()     then setWinScrollY(not winScrollY)         end
+
+		space(4)
+
+		if not demoWinOpen then
+			if button("Reopen Demo Window"):clicked() then
+				setDemoWinOpen(true)
+			end
+		end
+
 	end)
+
+	-- Live demo window whose options are driven by the checkboxes above
+	if demoWinOpen then
+		local win = window({
+			title = "Demo Window",
+			closable = winClosable,
+			minimizable = winMinimizable,
+			movable = winMovable,
+			resizable = winResizable,
+			scrollX = winScrollX,
+			scrollY = winScrollY,
+			size = Vector2.new(260, 180),
+			position = Vector2.new(430, 30),
+		}, function()
+			label("Toggle options in the Widget Gallery")
+			label("to see them take effect here.")
+		end)
+		if win:closed() then
+			setDemoWinOpen(false)
+		end
+	end
 end)

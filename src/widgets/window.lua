@@ -5,8 +5,11 @@
 
 	.title? string -- Window title
 	.closable? boolean -- Show close button
+	.minimizable? boolean -- Show minimize button
 	.movable? boolean -- Allow dragging
 	.resizable? boolean -- Allow resizing
+	.scrollX? boolean -- Enable horizontal scroll bar (default false)
+	.scrollY? boolean -- Enable vertical scroll bar (default true)
 	.size? Vector2 -- Initial size in pixels, defaults to Vector2.new(300, 400)
 	.position? Vector2 -- Initial position in pixels
 ]=]
@@ -20,23 +23,24 @@
 	@return WindowHandle
 
 	An Iris-styled window panel with title bar, scrollable content area, optional
-	close button, dragging, and resizing. Unlike Plasma's window, this does **not**
+	close/minimize buttons, dragging, and resizing. Unlike Plasma's window, this does **not**
 	use automatic sizing — the window has an explicit size.
 
 	Returns a handle with:
 	- `closed()` – returns `true` once when the close button was clicked.
+	- `minimized()` – returns `true` once when the minimize button is toggled.
 
 	```lua
-	if window("My Window", function()
+	local win = window({ title = "My Window", closable = true, minimizable = true }, function()
 		label("Hello!")
-	end):closed() then
-		windowOpen = false
-	end
+	end)
+	if win:closed() then windowOpen = false end
 	```
 ]=]
 
 export type WindowHandle = {
 	closed: () -> boolean,
+	minimized: () -> boolean,
 }
 
 local GuiService = game:GetService("GuiService")
@@ -46,6 +50,7 @@ local Runtime = require(script.Parent.Parent.Runtime)
 local createConnect = require(script.Parent.Parent.createConnect)
 local Style = require(script.Parent.Parent.Style)
 local create = require(script.Parent.Parent.create)
+local Contexts = require(script.Parent.Parent.contexts)
 
 local MIN_SIZE = Vector2.new(120, 80)
 
@@ -56,6 +61,7 @@ return Runtime.widget(function(options, fn)
 	options = options or {}
 
 	local closed, setClosed = Runtime.useState(false)
+	local minimized, setMinimized = Runtime.useState(false)
 	local size, setSize = Runtime.useState(options.size or Vector2.new(300, 400))
 
 	local refs = Runtime.useInstance(function(ref)
@@ -132,6 +138,32 @@ return Runtime.widget(function(options, fn)
 				}),
 
 				create("TextButton", {
+					[ref] = "minimize",
+					BackgroundTransparency = 1,
+					Font = Enum.Font.GothamBold,
+					TextColor3 = Color3.fromRGB(200, 200, 200),
+					TextSize = style.textSize + 2,
+					Size = UDim2.new(0, 16, 0, 16),
+					Text = "−",
+					LayoutOrder = 2,
+					Visible = false,
+
+					MouseEnter = function()
+						ref.minimize.TextColor3 = Color3.fromRGB(255, 255, 255)
+					end,
+
+					MouseLeave = function()
+						ref.minimize.TextColor3 = Color3.fromRGB(200, 200, 200)
+					end,
+
+					Activated = function()
+						setMinimized(function(prev)
+							return not prev
+						end)
+					end,
+				}),
+
+				create("TextButton", {
 					[ref] = "close",
 					BackgroundTransparency = 1,
 					Font = Enum.Font.GothamBold,
@@ -139,7 +171,7 @@ return Runtime.widget(function(options, fn)
 					TextSize = style.textSize + 2,
 					Size = UDim2.new(0, 16, 0, 16),
 					Text = "×",
-					LayoutOrder = 2,
+					LayoutOrder = 3,
 					Visible = options.closable or false,
 
 					MouseEnter = function()
@@ -257,6 +289,7 @@ return Runtime.widget(function(options, fn)
 						local newSize = initSize + delta
 						newSize = Vector2.new(math.max(MIN_SIZE.X, newSize.X), math.max(MIN_SIZE.Y, newSize.Y))
 
+						local titleBarHeight = Style.get().titleBarHeight
 						ref.frame.Size = UDim2.new(0, newSize.X, 0, newSize.Y)
 						ref.container.Size = UDim2.new(1, 0, 0, newSize.Y - titleBarHeight)
 						setSize(newSize)
@@ -292,12 +325,47 @@ return Runtime.widget(function(options, fn)
 	-- Apply options
 	local movable = if options.movable ~= nil then options.movable else true
 	local resizable = if options.resizable ~= nil then options.resizable else true
+	local minimizable = options.minimizable or false
 
 	refs.titleBar.Active = movable
-	refs.resizeGrip.Visible = resizable
+	refs.minimize.Visible = minimizable
 	refs.close.Visible = options.closable or false
+
+	-- Title label width: shrink by 20px per visible button (16px + 4px UIListLayout spacing)
+	local titlePad = 0
+	if options.closable then titlePad += 20 end
+	if minimizable then titlePad += 20 end
+	refs.title.Size = UDim2.new(1, -titlePad, 1, 0)
 	refs.title.Text = options.title or ""
-	refs.title.Size = UDim2.new(1, if options.closable then -24 else 0, 1, 0)
+
+	-- Minimize collapse / restore
+	local titleBarHeight = Style.get().titleBarHeight
+	if minimized then
+		refs.frame.Size = UDim2.new(0, size.X, 0, titleBarHeight)
+		refs.container.Visible = false
+		refs.resizeGrip.Visible = false
+	else
+		refs.frame.Size = UDim2.new(0, size.X, 0, size.Y)
+		refs.container.Size = UDim2.new(1, 0, 0, size.Y - titleBarHeight)
+		refs.container.Visible = true
+		refs.resizeGrip.Visible = resizable
+	end
+
+	-- Scroll axes
+	local scrollX = options.scrollX or false
+	local scrollY = if options.scrollY ~= nil then options.scrollY else true
+	if scrollX and scrollY then
+		refs.container.AutomaticCanvasSize = Enum.AutomaticSize.XY
+	elseif scrollX then
+		refs.container.AutomaticCanvasSize = Enum.AutomaticSize.X
+	elseif scrollY then
+		refs.container.AutomaticCanvasSize = Enum.AutomaticSize.Y
+	else
+		refs.container.AutomaticCanvasSize = Enum.AutomaticSize.None
+	end
+
+	-- Expose scroll axes to child widgets via context
+	Runtime.provideContext(Contexts.scrollX, scrollX)
 
 	-- Run children inside the scrollable container
 	Runtime.scope(fn)
@@ -306,6 +374,13 @@ return Runtime.widget(function(options, fn)
 		closed = function()
 			if closed then
 				setClosed(false)
+				return true
+			end
+			return false
+		end,
+		minimized = function()
+			if minimized then
+				setMinimized(false)
 				return true
 			end
 			return false

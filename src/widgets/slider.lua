@@ -147,7 +147,7 @@ return Runtime.widget(function(options)
 	end)
 
 	-- Update visual positions using scale-based UDim (no AbsoluteSize needed)
-	refs.grab.Position = UDim2.new(percentageValue, 0, 0.5, 0)
+	refs.grab.Position = UDim2.new(percentageValue, 10 * (0.5 - percentageValue), 0.5, 0)
 	refs.fill.Size = UDim2.new(percentageValue, 0, 1, 0)
 
 	local value = percentageValue * (max - min) + min
