@@ -1,0 +1,13 @@
+[package]
+name = "EgooE"
+version = "0.1.0"
+description = "EgooE - A modular UI widget library for Roblox"
+license = "MIT"
+authors = ["CapedBojji"]
+repository = "https://github.com/CapedBojji/improved-garbanzo"
+
+[dependencies]
+
+[[bin]]
+name = "main"
+path = "src/init.lua"
