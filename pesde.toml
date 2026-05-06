@@ -5,8 +5,7 @@ license = "MIT"
 authors = ["CapedBojji"]
 repository = "https://github.com/CapedBojji/egooe"
 
-[dependencies]
-
-[[bin]]
-name = "main"
-path = "src/init.lua"
+[target]
+environment = "roblox"
+lib = "src/init.lua"
+build_files = ["src/**/*.luau", "src/**/*.lua"]
