@@ -1,9 +1,21 @@
 name = "l4ud/egooe"
 version = "0.1.0"
 description = "EgooE - A modular UI widget library for Roblox"
-license = "MIT"
 authors = ["CapedBojji"]
-repository = "https://github.com/CapedBojji/egooe"
-target = "roblox"
+repository = "https://github.com/CapedBojji/EgooE"
+license = "MIT"
+includes = ["src/**/*", "pesde.toml", "README.md", "LICENSE"]
+
+[target]
+environment = "roblox"
+build_files = ["src"]
 lib = "src/init.lua"
-build_files = ["src/**/*.luau", "src/**/*.lua"]
+
+[wally_indices]
+default = "https://github.com/UpliftGames/wally-index"
+
+[indices]
+default = "https://github.com/pesde-pkg/index"
+
+[engines]
+pesde = "^0.7.0"
