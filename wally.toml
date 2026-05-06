@@ -1,9 +1,0 @@
-[package]
-name = "capedbojji/iris-plasma"
-version = "0.1.0"
-registry = "https://github.com/UpliftGames/wally-index"
-realm = "shared"
-description = "An immediate-mode UI framework for Roblox with Iris visual style and Plasma-compatible API"
-license = "MIT"
-
-[dependencies]
