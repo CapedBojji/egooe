@@ -6,6 +6,7 @@ return Runtime.widget(function(errorText)
 	local refs = Runtime.useInstance(function(ref)
 		return create("TextLabel", {
 			[ref] = "label",
+			Visible = true,
 			BackgroundColor3 = Color3.fromRGB(80, 20, 20),
 			BackgroundTransparency = 0,
 			BorderSizePixel = 0,
@@ -25,5 +26,6 @@ return Runtime.widget(function(errorText)
 		})
 	end)
 
+	refs.label.Visible = true
 	refs.label.Text = errorText
 end)
