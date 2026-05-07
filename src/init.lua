@@ -17,6 +17,7 @@ local _toggle = require(script.widgets.toggle)
 local _collapsingHeader = require(script.widgets.collapsingHeader)
 local _clickableLabel = require(script.widgets.clickableLabel)
 local _modal = require(script.widgets.modal)
+local _childWindow = require(script.widgets.childWindow)
 
 -- Handle types
 type ButtonHandle = _button.ButtonHandle
@@ -30,6 +31,7 @@ type ToggleHandle = _toggle.ToggleHandle
 type CollapsingHeaderHandle = _collapsingHeader.CollapsingHeaderHandle
 type ClickableLabelHandle = _clickableLabel.ClickableLabelHandle
 type ModalHandle = _modal.ModalHandle
+type ChildWindowHandle = _childWindow.ChildWindowHandle
 
 -- Option types
 type ButtonOptions = { width: (UDim | number)?, disabled: boolean? }
@@ -59,6 +61,7 @@ type ComboBoxOptions = { items: { string }, selected: string?, label: string? }
 type ProgressBarOptions = { value: number, label: string? }
 type ToggleOptions = { on: boolean?, disabled: boolean? }
 type ModalOptions = { title: string?, open: boolean?, closable: boolean? }
+type ChildWindowOptions = { title: string?, height: number?, minimizable: boolean?, scrollX: boolean?, scrollY: boolean? }
 type PopupOptions = { open: boolean?, position: Vector2? }
 
 return {
@@ -111,6 +114,7 @@ return {
 	clickableLabel = _clickableLabel :: (text: string, options: ClickableLabelOptions?) -> ClickableLabelHandle,
 	modal = _modal :: (options: ModalOptions, children: () -> ()) -> ModalHandle,
 	popup = require(script.widgets.popup) :: (options: PopupOptions, children: () -> ()) -> (),
+	childWindow = _childWindow :: (options: string | ChildWindowOptions, children: () -> ()) -> ChildWindowHandle,
 
 	demoWindow = require(script.widgets.demoWindow) :: () -> (),
 }

@@ -35,6 +35,7 @@ local toggle          = require(script.Parent.toggle)
 local clickableLabel  = require(script.Parent.clickableLabel)
 local modal           = require(script.Parent.modal)
 local popup           = require(script.Parent.popup)
+local childWindow     = require(script.Parent.childWindow)
 
 return Runtime.widget(function()
 
@@ -277,6 +278,23 @@ return Runtime.widget(function()
 			label("You found the hidden content!")
 			label("Sliders work inside collapsing headers too.")
 			slider({ min = 0, max = 10, label = "Inner" })
+		end)
+
+		space(6)
+
+		-- ── ChildWindow ───────────────────────────────────────────────────────
+		heading("ChildWindow")
+		separator()
+
+		childWindow({ title = "Scrollable Section", height = 120 }, function()
+			for i = 1, 12 do
+				label("Row " .. tostring(i))
+			end
+		end)
+
+		childWindow({ title = "Another Section", height = 80 }, function()
+			label("Nested widgets work here too.")
+			slider({ min = 0, max = 100, label = "Inner Slider" })
 		end)
 
 		space(6)
