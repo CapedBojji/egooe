@@ -1,0 +1,36 @@
+name: Publish to pesde
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up mise tools
+        uses: jdx/mise-action@v2
+
+      - name: Verify pesde CLI
+        run: pesde --version
+
+      - name: Authenticate to pesde index
+        env:
+          PESDE_TOKEN: ${{ secrets.PESDE_TOKEN }}
+        run: |
+          if [ -z "$PESDE_TOKEN" ]; then
+            echo "PESDE_TOKEN is not set. Add it as a repository secret." >&2
+            exit 1
+          fi
+          pesde auth login -t "$PESDE_TOKEN"
+
+      - name: Publish package
+        run: pesde publish -y
