@@ -16,8 +16,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up mise tools
-        uses: jdx/mise-action@v2
+      - name: Install pesde CLI
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download \
+            --repo pesde-pkg/pesde \
+            --pattern 'pesde-*-linux-x86_64.zip' \
+            --dir /tmp
+
+          unzip -o /tmp/pesde-*-linux-x86_64.zip -d /tmp/pesde-bin
+          install -m 0755 /tmp/pesde-bin/pesde /usr/local/bin/pesde
 
       - name: Verify pesde CLI
         run: pesde --version

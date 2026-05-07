@@ -1,6 +1,6 @@
 [package]
 name = "l4ud/egooe"
-version = "0.1.0"
+version = "0.1.1"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 description = "An immediate-mode UI framework for Roblox with Iris visual style and Plasma-compatible API"

@@ -14,7 +14,7 @@ An immediate-mode UI framework for Roblox with **Iris visual style** and a **Pla
 Install with [Wally](https://wally.run/) by adding to your `wally.toml`:
 
 ```toml
-EgooE = "capedbojji/iris-plasma@0.1.0"
+EgooE = "capedbojji/iris-plasma@0.1.1"
 ```
 
 Or sync with [Rojo](https://rojo.space/) using `default.project.json`.
