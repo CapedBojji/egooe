@@ -484,7 +484,7 @@ EgooE.label(string.format("%.0f%%", volume * 100))
 
 ### dragValue
 
-A number field you drag left/right to change the value. More compact than a slider when space is tight.
+A compact number field. Drag left/right to adjust, or click to type a number directly.
 
 **Signature**
 ```
@@ -498,10 +498,10 @@ dragValue(options?: DragValueOptions) -> number
 | `min` | `number` | `0` | Minimum value |
 | `max` | `number` | `100` | Maximum value |
 | `initial` | `number` | `min` | Starting value |
-| `step` | `number` | `1` | Amount changed per 4 pixels of drag |
+| `step` | `number` | `1` | Amount changed per 4 pixels of drag, and the snap amount for typed values |
 | `label` | `string` | — | Prefix shown in the field |
 
-**Returns** the current numeric value every frame.
+**Returns** the current numeric value every frame. Typed values commit on blur or Enter, clamp to `min`/`max`, and snap to `step`.
 
 **Example**
 ```lua
