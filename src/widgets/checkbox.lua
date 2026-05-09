@@ -18,7 +18,7 @@ export type CheckboxHandle = {
 	- `clicked()` – returns `true` once when the checkbox was toggled this frame.
 
 	```lua
-	if checkbox("Enable feature", { checked = enabled }):clicked() then
+	if checkbox("Enable feature", { checked = enabled }).clicked() then
 		enabled = not enabled
 	end
 	```

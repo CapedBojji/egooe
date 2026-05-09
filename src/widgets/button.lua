@@ -14,7 +14,7 @@ export type ButtonHandle = {
 	- `clicked()` – returns `true` once when the button was clicked this frame.
 
 	```lua
-	if button("Click me"):clicked() then
+	if button("Click me").clicked() then
 		print("Clicked!")
 	end
 	```

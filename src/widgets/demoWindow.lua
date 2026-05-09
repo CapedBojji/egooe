@@ -112,7 +112,7 @@ return Runtime.widget(function()
 		heading("Button")
 		separator()
 
-		if button("Click me!"):clicked() then
+		if button("Click me!").clicked() then
 			setClickCount(clickCount + 1)
 		end
 		label("Clicked " .. tostring(clickCount) .. " time(s)")
@@ -129,7 +129,7 @@ return Runtime.widget(function()
 		heading("ClickableLabel")
 		separator()
 
-		if clickableLabel("View source on GitHub →"):clicked() then
+		if clickableLabel("View source on GitHub →").clicked() then
 			setClickCount(clickCount + 1)
 		end
 
@@ -139,10 +139,10 @@ return Runtime.widget(function()
 		heading("Checkbox")
 		separator()
 
-		if checkbox("Click to toggle", { checked = cb1 }):clicked() then
+		if checkbox("Click to toggle", { checked = cb1 }).clicked() then
 			setCb1(not cb1)
 		end
-		if checkbox("Pre-checked", { checked = cb2 }):clicked() then
+		if checkbox("Pre-checked", { checked = cb2 }).clicked() then
 			setCb2(not cb2)
 		end
 		checkbox("Disabled", { checked = true, disabled = true })
@@ -155,7 +155,7 @@ return Runtime.widget(function()
 
 		for _, opt in ipairs({ "First", "Second", "Third" }) do
 			local capturedOpt = opt
-			if radioButton(opt, { selected = radioChoice == opt }):clicked() then
+			if radioButton(opt, { selected = radioChoice == opt }).clicked() then
 				setRadioChoice(capturedOpt)
 			end
 		end
@@ -170,7 +170,7 @@ return Runtime.widget(function()
 		row(function()
 			for i, name in ipairs({ "First", "Second", "Third" }) do
 				local capturedI = i
-				if selectableLabel(name, { selected = selectedTab == i }):clicked() then
+				if selectableLabel(name, { selected = selectedTab == i }).clicked() then
 					setSelectedTab(capturedI)
 				end
 			end
@@ -183,9 +183,9 @@ return Runtime.widget(function()
 		heading("ComboBox")
 		separator()
 
-		local combo = comboBox({ items = { "First", "Second", "Third" } })
-		if combo:changed() then
-			setComboSelected(combo:value())
+		local combo = comboBox({ items = { "First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh" } })
+		if combo.changed() then
+			setComboSelected(combo.value())
 		end
 		label("Pick: " .. comboSelected)
 
@@ -220,10 +220,10 @@ return Runtime.widget(function()
 		label(math.floor(progressVal * 100) .. "%")
 
 		row(function()
-			if button("−10%", { width = 60 }):clicked() then
+			if button("−10%", { width = 60 }).clicked() then
 				setProgressVal(math.max(0, progressVal - 0.1))
 			end
-			if button("+10%", { width = 60 }):clicked() then
+			if button("+10%", { width = 60 }).clicked() then
 				setProgressVal(math.min(1, progressVal + 0.1))
 			end
 		end)
@@ -234,7 +234,7 @@ return Runtime.widget(function()
 		heading("Toggle (Custom Widget)")
 		separator()
 
-		if toggle("Enable feature", { on = toggleOn }):clicked() then
+		if toggle("Enable feature", { on = toggleOn }).clicked() then
 			setToggleOn(not toggleOn)
 		end
 		toggle("Disabled toggle", { on = true, disabled = true })
@@ -246,11 +246,11 @@ return Runtime.widget(function()
 		separator()
 
 		local handle = input({ placeholder = "Write something here", label = "Text" })
-		if handle:changed() then
-			setInputText(handle:value())
+		if handle.changed() then
+			setInputText(handle.value())
 		end
-		if handle:submitted() then
-			setSubmitLog("Submitted: " .. handle:value())
+		if handle.submitted() then
+			setSubmitLog("Submitted: " .. handle.value())
 		end
 		if inputText ~= "" then
 			label("Live: " .. inputText)
@@ -303,20 +303,20 @@ return Runtime.widget(function()
 		heading("Popup")
 		separator()
 
-		if button(showPopup and "Close popup" or "Open popup"):clicked() then
+		if button(showPopup and "Close popup" or "Open popup").clicked() then
 			setShowPopup(not showPopup)
 		end
 
 		popup({ open = showPopup }, function()
 			label("Popup menu")
 			separator()
-			if clickableLabel("Option A"):clicked() then
+			if clickableLabel("Option A").clicked() then
 				setShowPopup(false)
 			end
-			if clickableLabel("Option B"):clicked() then
+			if clickableLabel("Option B").clicked() then
 				setShowPopup(false)
 			end
-			if clickableLabel("Option C"):clicked() then
+			if clickableLabel("Option C").clicked() then
 				setShowPopup(false)
 			end
 		end)
@@ -327,7 +327,7 @@ return Runtime.widget(function()
 		heading("Modal")
 		separator()
 
-		if button("Open modal"):clicked() then
+		if button("Open modal").clicked() then
 			setShowModal(true)
 			setModalResult("")
 		end
@@ -341,18 +341,18 @@ return Runtime.widget(function()
 			label("This action cannot be undone.", { color = Color3.fromRGB(200, 100, 100) })
 			space(4)
 			row(function()
-				if button("Confirm", { width = 100 }):clicked() then
+				if button("Confirm", { width = 100 }).clicked() then
 					setShowModal(false)
 					setModalResult("Confirmed!")
 				end
-				if button("Cancel", { width = 100 }):clicked() then
+				if button("Cancel", { width = 100 }).clicked() then
 					setShowModal(false)
 					setModalResult("Cancelled.")
 				end
 			end)
 		end)
 
-		if m:closed() then
+		if m.closed() then
 			setShowModal(false)
 		end
 
@@ -362,17 +362,17 @@ return Runtime.widget(function()
 		heading("Window")
 		separator()
 
-		if checkbox("closable",    { checked = winClosable }):clicked()    then setWinClosable(not winClosable)       end
-		if checkbox("minimizable", { checked = winMinimizable }):clicked() then setWinMinimizable(not winMinimizable) end
-		if checkbox("movable",     { checked = winMovable }):clicked()     then setWinMovable(not winMovable)         end
-		if checkbox("resizable",   { checked = winResizable }):clicked()   then setWinResizable(not winResizable)     end
-		if checkbox("scrollX",     { checked = winScrollX }):clicked()     then setWinScrollX(not winScrollX)         end
-		if checkbox("scrollY",     { checked = winScrollY }):clicked()     then setWinScrollY(not winScrollY)         end
+		if checkbox("closable",    { checked = winClosable }).clicked()    then setWinClosable(not winClosable)       end
+		if checkbox("minimizable", { checked = winMinimizable }).clicked() then setWinMinimizable(not winMinimizable) end
+		if checkbox("movable",     { checked = winMovable }).clicked()     then setWinMovable(not winMovable)         end
+		if checkbox("resizable",   { checked = winResizable }).clicked()   then setWinResizable(not winResizable)     end
+		if checkbox("scrollX",     { checked = winScrollX }).clicked()     then setWinScrollX(not winScrollX)         end
+		if checkbox("scrollY",     { checked = winScrollY }).clicked()     then setWinScrollY(not winScrollY)         end
 
 		space(4)
 
 		if not demoWinOpen then
-			if button("Reopen Demo Window"):clicked() then
+			if button("Reopen Demo Window").clicked() then
 				setDemoWinOpen(true)
 			end
 		end
@@ -395,7 +395,7 @@ return Runtime.widget(function()
 			label("Toggle options in the Widget Gallery")
 			label("to see them take effect here.")
 		end)
-		if win:closed() then
+		if win.closed() then
 			setDemoWinOpen(false)
 		end
 	end

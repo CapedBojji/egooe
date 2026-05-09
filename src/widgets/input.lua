@@ -20,8 +20,8 @@ export type InputHandle = {
 
 	```lua
 	local handle = input({ placeholder = "Enter your name..." })
-	if handle:changed() then
-		print("New value:", handle:value())
+	if handle.changed() then
+		print("New value:", handle.value())
 	end
 	```
 ]=]

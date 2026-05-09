@@ -34,7 +34,7 @@
 	local win = window({ title = "My Window", closable = true, minimizable = true }, function()
 		label("Hello!")
 	end)
-	if win:closed() then windowOpen = false end
+	if win.closed() then windowOpen = false end
 	```
 ]=]
 

@@ -39,17 +39,34 @@ return Runtime.widget(function(options)
 
 		ref.connection = nil
 
+		local function startDrag()
+			if ref.connection then
+				ref.connection:Disconnect()
+			end
+			ref.connection = connectEvent(UserInputService, "InputChanged", function(moveInput)
+				if moveInput.UserInputType ~= Enum.UserInputType.MouseMovement then
+					return
+				end
+				local trackFrame = ref.track
+				local trackWidth = trackFrame.AbsoluteSize.X
+				local x = math.clamp(moveInput.Position.X - trackFrame.AbsolutePosition.X, 0, trackWidth)
+				setPercentageValue(x / trackWidth)
+			end)
+		end
+
 		return create("Frame", {
 			[ref] = "frame",
 			BackgroundTransparency = 1,
 			Size = UDim2.new(1, 0, 0, style.itemHeight),
 
 			-- Track background
-			create("Frame", {
+			create("TextButton", {
 				[ref] = "track",
 				BackgroundColor3 = style.frameBgColor,
 				BackgroundTransparency = style.frameBgTransparency,
 				BorderSizePixel = 0,
+				Text = "",
+				AutoButtonColor = false,
 				AnchorPoint = Vector2.new(0, 0.5),
 				Position = UDim2.new(0, grabSize / 2, 0.5, 0),
 				Size = UDim2.new(1, -grabSize, 0, trackHeight),
@@ -70,6 +87,27 @@ return Runtime.widget(function(options)
 						CornerRadius = UDim.new(0, 2),
 					}),
 				}),
+
+				InputBegan = function(input)
+					if input.UserInputType ~= Enum.UserInputType.MouseButton1 then
+						return
+					end
+					local trackFrame = ref.track
+					local trackWidth = trackFrame.AbsoluteSize.X
+					local x = math.clamp(input.Position.X - trackFrame.AbsolutePosition.X, 0, trackWidth)
+					setPercentageValue(x / trackWidth)
+					startDrag()
+				end,
+
+				InputEnded = function(input)
+					if input.UserInputType ~= Enum.UserInputType.MouseButton1 then
+						return
+					end
+					if ref.connection then
+						ref.connection:Disconnect()
+						ref.connection = nil
+					end
+				end,
 			}),
 
 			-- Grab handle
@@ -91,23 +129,7 @@ return Runtime.widget(function(options)
 					if input.UserInputType ~= Enum.UserInputType.MouseButton1 then
 						return
 					end
-
-					if ref.connection then
-						ref.connection:Disconnect()
-					end
-
-					ref.connection = connectEvent(UserInputService, "InputChanged", function(moveInput)
-						if moveInput.UserInputType ~= Enum.UserInputType.MouseMovement then
-							return
-						end
-
-						local trackFrame = ref.track
-						local trackWidth = trackFrame.AbsoluteSize.X
-						local x = moveInput.Position.X - trackFrame.AbsolutePosition.X
-						x = math.clamp(x, 0, trackWidth)
-
-						setPercentageValue(x / trackWidth)
-					end)
+					startDrag()
 				end,
 
 				InputEnded = function(input)

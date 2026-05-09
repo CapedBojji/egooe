@@ -3,12 +3,15 @@ export type ComboBoxHandle = {
 	changed: () -> boolean,
 }
 
+local UserInputService = game:GetService("UserInputService")
+
 local Runtime = require(script.Parent.Parent.Runtime)
 local Style = require(script.Parent.Parent.Style)
 local create = require(script.Parent.Parent.create)
 
 local ARROW = "▼"
 local ITEM_HEIGHT = 22
+local MAX_VISIBLE_ITEMS = 6
 
 return Runtime.widget(function(options)
 	options = options or {}
@@ -17,14 +20,14 @@ return Runtime.widget(function(options)
 	local initialSelected = options.selected or (items[1] or "")
 
 	local selectedValue, setSelectedValue = Runtime.useState(initialSelected)
-	local selectedIndex, setSelectedIndex = Runtime.useState(function()
-		for i, item in ipairs(items) do
-			if item == initialSelected then
-				return i
-			end
+	local initialIndex = nil
+	for i, item in ipairs(items) do
+		if item == initialSelected then
+			initialIndex = i
+			break
 		end
-		return nil
-	end)
+	end
+	local selectedIndex, setSelectedIndex = Runtime.useState(initialIndex)
 	local changed, setChanged = Runtime.useState(false)
 	local isOpen, setIsOpen = Runtime.useState(false)
 	local hovered, setHovered = Runtime.useState(false)
@@ -34,7 +37,7 @@ return Runtime.widget(function(options)
 		local style = Style.get()
 
 		return create("TextButton", {
-			[ref] = "btn",
+			[ref] = "comboBtn",
 			BackgroundColor3 = style.frameBgColor,
 			BackgroundTransparency = style.frameBgTransparency,
 			BorderSizePixel = 0,
@@ -100,13 +103,17 @@ return Runtime.widget(function(options)
 
 		local style = Style.get()
 
-		local dropdown = Instance.new("Frame")
+		local dropdown = Instance.new("ScrollingFrame")
 		dropdown.Name = "ComboDropdown"
 		dropdown.BackgroundColor3 = style.popupBgColor
 		dropdown.BackgroundTransparency = 0
 		dropdown.BorderSizePixel = 0
 		dropdown.Size = UDim2.new(0, 160, 0, 0)
-		dropdown.AutomaticSize = Enum.AutomaticSize.Y
+		dropdown.CanvasSize = UDim2.new(0, 0, 0, 0)
+		dropdown.ScrollingEnabled = true
+		dropdown.ScrollBarThickness = 4
+		dropdown.ScrollBarImageColor3 = style.sliderGrabColor
+		dropdown.AutomaticSize = Enum.AutomaticSize.None
 		dropdown.ZIndex = 250
 		dropdown.Visible = false
 		dropdown.Parent = rootGui
@@ -136,22 +143,73 @@ return Runtime.widget(function(options)
 		end
 	end)
 
+	-- Keyboard navigation when dropdown is open
+	Runtime.useEffect(function()
+		if not isOpen then
+			refs.keyFocusIndex = nil
+			return
+		end
+
+		refs.keyFocusIndex = selectedIndex
+
+		local conn = UserInputService.InputBegan:Connect(function(input)
+			if input.UserInputType ~= Enum.UserInputType.Keyboard then return end
+
+			local current = refs.keyFocusIndex or selectedIndex or 1
+
+			if input.KeyCode == Enum.KeyCode.Down then
+				local next = math.clamp(current + 1, 1, #items)
+				refs.keyFocusIndex = next
+				if refs.dropdown then
+					local totalH = #items * ITEM_HEIGHT
+					local maxH = math.min(totalH, MAX_VISIBLE_ITEMS * ITEM_HEIGHT)
+					local scrollY = math.clamp((next - 1) * ITEM_HEIGHT - math.floor(maxH / ITEM_HEIGHT / 2) * ITEM_HEIGHT, 0, totalH - maxH)
+					refs.dropdown.CanvasPosition = Vector2.new(0, scrollY)
+				end
+			elseif input.KeyCode == Enum.KeyCode.Up then
+				local prev = math.clamp(current - 1, 1, #items)
+				refs.keyFocusIndex = prev
+				if refs.dropdown then
+					local totalH = #items * ITEM_HEIGHT
+					local maxH = math.min(totalH, MAX_VISIBLE_ITEMS * ITEM_HEIGHT)
+					local scrollY = math.clamp((prev - 1) * ITEM_HEIGHT - math.floor(maxH / ITEM_HEIGHT / 2) * ITEM_HEIGHT, 0, totalH - maxH)
+					refs.dropdown.CanvasPosition = Vector2.new(0, scrollY)
+				end
+			elseif input.KeyCode == Enum.KeyCode.Return or input.KeyCode == Enum.KeyCode.KeypadEnter then
+				local idx = refs.keyFocusIndex
+				if idx and items[idx] then
+					setSelectedValue(items[idx])
+					setSelectedIndex(idx)
+					setChanged(true)
+					setIsOpen(false)
+				end
+			elseif input.KeyCode == Enum.KeyCode.Escape then
+				setIsOpen(false)
+			end
+		end)
+
+		return function()
+			conn:Disconnect()
+			refs.keyFocusIndex = nil
+		end
+	end, isOpen)
+
 	local style = Style.get()
 
 	-- Update button visuals — always use internal selectedValue so it reflects clicks immediately
-	refs.btn.Text = " " .. selectedValue
-	refs.btn.TextSize = style.textSize
-	refs.btn.TextColor3 = style.textColor
+	refs.comboBtn.Text = " " .. selectedValue
+	refs.comboBtn.TextSize = style.textSize
+	refs.comboBtn.TextColor3 = style.textColor
 
 	if isOpen then
-		refs.btn.BackgroundColor3 = style.frameBgHoveredColor
-		refs.btn.BackgroundTransparency = style.frameBgHoveredTransparency
+		refs.comboBtn.BackgroundColor3 = style.frameBgHoveredColor
+		refs.comboBtn.BackgroundTransparency = style.frameBgHoveredTransparency
 	elseif hovered then
-		refs.btn.BackgroundColor3 = style.frameBgHoveredColor
-		refs.btn.BackgroundTransparency = style.frameBgHoveredTransparency * 1.5
+		refs.comboBtn.BackgroundColor3 = style.frameBgHoveredColor
+		refs.comboBtn.BackgroundTransparency = style.frameBgHoveredTransparency * 1.5
 	else
-		refs.btn.BackgroundColor3 = style.frameBgColor
-		refs.btn.BackgroundTransparency = style.frameBgTransparency
+		refs.comboBtn.BackgroundColor3 = style.frameBgColor
+		refs.comboBtn.BackgroundTransparency = style.frameBgTransparency
 	end
 
 	-- Position and populate the dropdown
@@ -164,11 +222,15 @@ return Runtime.widget(function(options)
 
 		if isOpen then
 			-- Align dropdown below the button
-			local absPos = refs.btn.AbsolutePosition
-			local absSize = refs.btn.AbsoluteSize
+			local absPos = refs.comboBtn.AbsolutePosition
+			local absSize = refs.comboBtn.AbsoluteSize
+
+			local totalH = #items * ITEM_HEIGHT
+			local maxH = math.min(totalH, MAX_VISIBLE_ITEMS * ITEM_HEIGHT)
 
 			refs.dropdown.Position = UDim2.new(0, absPos.X, 0, absPos.Y + absSize.Y + 2)
-			refs.dropdown.Size = UDim2.new(0, absSize.X, 0, 0)
+			refs.dropdown.Size = UDim2.new(0, absSize.X, 0, maxH)
+			refs.dropdown.CanvasSize = UDim2.new(0, 0, 0, totalH)
 
 			-- Build item buttons once (only if not already built for this set of items)
 			local existingCount = 0
@@ -224,16 +286,17 @@ return Runtime.widget(function(options)
 				end
 			end
 
-			-- Update highlight for current selection and hover each frame
+			-- Update highlight for current selection, hover, and keyboard focus each frame
 			for _, child in ipairs(refs.dropdown:GetChildren()) do
 				if child:IsA("TextButton") then
 					local childIndex = child.LayoutOrder
 					local isSelected = childIndex == selectedIndex
-					local isHovered = refs.hoveredItem == childIndex
+					local isHoveredItem = refs.hoveredItem == childIndex
+					local isKeyFocused = refs.keyFocusIndex ~= nil and childIndex == refs.keyFocusIndex
 					if isSelected then
 						child.BackgroundColor3 = style.frameBgHoveredColor
 						child.BackgroundTransparency = 0.5
-					elseif isHovered then
+					elseif isHoveredItem or isKeyFocused then
 						child.BackgroundColor3 = style.frameBgHoveredColor
 						child.BackgroundTransparency = 0.7
 					else
