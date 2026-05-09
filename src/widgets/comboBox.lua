@@ -111,7 +111,7 @@ return Runtime.widget(function(options)
 		dropdown.Size = UDim2.new(0, 160, 0, 0)
 		dropdown.CanvasSize = UDim2.new(0, 0, 0, 0)
 		dropdown.ScrollingEnabled = true
-		dropdown.ScrollBarThickness = 4
+		dropdown.ScrollBarThickness = 0
 		dropdown.ScrollBarImageColor3 = style.sliderGrabColor
 		dropdown.AutomaticSize = Enum.AutomaticSize.None
 		dropdown.ZIndex = 250
