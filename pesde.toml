@@ -1,5 +1,5 @@
 name = "l4ud/egooe"
-version = "0.1.1"
+version = "0.1.2"
 description = "EgooE - A modular UI widget library for Roblox"
 authors = ["CapedBojji"]
 repository = "https://github.com/CapedBojji/EgooE"
