@@ -1,43 +1,43 @@
 {
-    "name": "iris-plasma-test",
-    "tree": {
-        "$className": "DataModel",
-        "Workspace": {
-            "Baseplate": {
-                "$className": "Part",
-                "$properties": {
-                    "Anchored": true,
-                    "Locked": true,
-                    "Position": [0, -8, 0],
-                    "Size": [512, 16, 512],
-                    "Color": [0.35686274509, 0.35686274509, 0.35686274509],
-                    "TopSurface": "Smooth",
-                    "BottomSurface": "Smooth"
-                },
-                "Texture": {
-                    "$className": "Texture",
-                    "$properties": {
-                        "Texture": "rbxassetid://6372755229",
-                        "Color3": [0, 0, 0],
-                        "Transparency": 0.8,
-                        "StudsPerTileU": 8,
-                        "StudsPerTileV": 8,
-                        "Face": "Top"
-                    }
-                }
-            }
-        },
-        "ReplicatedStorage": {
-            "EgooE": {
-                "$path": "default.project.json"
-            }
-        },
-        "StarterPlayer": {
-            "StarterPlayerScripts": {
-                "EgooEDemo": {
-                    "$path": "test/EgooEDemo.client.lua"
-                }
-            }
-        }
-    }
+	"name": "iris-plasma-test",
+	"tree": {
+		"$className": "DataModel",
+		"Workspace": {
+			"Baseplate": {
+				"$className": "Part",
+				"$properties": {
+					"Anchored": true,
+					"Locked": true,
+					"Position": [0, -8, 0],
+					"Size": [512, 16, 512],
+					"Color": [0.35686274509, 0.35686274509, 0.35686274509],
+					"TopSurface": "Smooth",
+					"BottomSurface": "Smooth"
+				},
+				"Texture": {
+					"$className": "Texture",
+					"$properties": {
+						"Texture": "rbxassetid://6372755229",
+						"Color3": [0, 0, 0],
+						"Transparency": 0.8,
+						"StudsPerTileU": 8,
+						"StudsPerTileV": 8,
+						"Face": "Top"
+					}
+				}
+			}
+		},
+		"ReplicatedStorage": {
+			"EgooE": {
+				"$path": "src"
+			}
+		},
+		"StarterPlayer": {
+			"StarterPlayerScripts": {
+				"EgooEDemo": {
+					"$path": "test/EgooEDemo.client.lua"
+				}
+			}
+		}
+	}
 }
