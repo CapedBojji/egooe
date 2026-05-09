@@ -3,3 +3,4 @@ Packages/
 **.rbxlx
 **.rbxl.lock
 .claude/
+sourcemap.json
