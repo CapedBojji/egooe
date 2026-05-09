@@ -60,4 +60,17 @@ return Runtime.widget(function(options, fn)
 	refs.layout.Padding = padding
 
 	Runtime.scope(fn)
+
+	for _, child in refs.frame:GetChildren() do
+		if child:IsA("GuiObject") then
+			if child.Size.X.Scale > 0 then
+				local fi = child:FindFirstChildOfClass("UIFlexItem")
+					or Instance.new("UIFlexItem", child)
+				fi.FlexMode = Enum.UIFlexMode.Fill
+			else
+				local fi = child:FindFirstChildOfClass("UIFlexItem")
+				if fi then fi:Destroy() end
+			end
+		end
+	end
 end)

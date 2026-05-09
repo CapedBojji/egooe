@@ -103,8 +103,12 @@ return Runtime.widget(function(options, fn)
 					TextSize = style.textSize,
 					TextXAlignment = Enum.TextXAlignment.Left,
 					TextYAlignment = Enum.TextYAlignment.Center,
-					Size = UDim2.new(1, -20, 1, 0),
+					Size = UDim2.new(0, 0, 1, 0),
 					LayoutOrder = 1,
+
+					create("UIFlexItem", {
+						FlexMode = Enum.UIFlexMode.Fill,
+					}),
 				}),
 
 				create("TextButton", {
@@ -171,9 +175,6 @@ return Runtime.widget(function(options, fn)
 
 	refs.title.Text = options.title or ""
 	refs.minimize.Visible = minimizable
-
-	local titlePad = if minimizable then -20 else 0
-	refs.title.Size = UDim2.new(1, titlePad, 1, 0)
 
 	-- Minimize collapse / restore
 	if minimized then

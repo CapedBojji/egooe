@@ -76,6 +76,9 @@ return Runtime.widget(function()
 	local showModal, setShowModal = Runtime.useState(false)
 	local modalResult, setModalResult = Runtime.useState("")
 
+	-- Row test window
+	local rowTestOpen, setRowTestOpen = Runtime.useState(false)
+
 	-- Popup
 	local showPopup, setShowPopup = Runtime.useState(false)
 
@@ -122,6 +125,16 @@ return Runtime.widget(function()
 			button("Small A", { width = 90 })
 			button("Disabled", { width = 90, disabled = true })
 		end)
+
+		space(6)
+
+		-- ── Row ───────────────────────────────────────────────────────────────
+		heading("Row")
+		separator()
+
+		if button("Open Row Test Window").clicked() then
+			setRowTestOpen(true)
+		end
 
 		space(6)
 
@@ -378,6 +391,47 @@ return Runtime.widget(function()
 		end
 
 	end)
+
+	-- Row test window
+	if rowTestOpen then
+		local rowWin = window({
+			title = "Row Tests",
+			closable = true,
+			movable = true,
+			resizable = true,
+			size = Vector2.new(320, 300),
+			position = Vector2.new(700, 30),
+		}, function()
+			heading("Equal fill (no explicit width)")
+			separator()
+			row(function()
+				button("A")
+				button("B")
+				button("C")
+			end)
+
+			space(6)
+
+			heading("Mixed: fixed + fill")
+			separator()
+			row(function()
+				button("80px", { width = 80 })
+				button("Fill")
+			end)
+
+			space(6)
+
+			heading("Two equal")
+			separator()
+			row(function()
+				button("OK")
+				button("Cancel")
+			end)
+		end)
+		if rowWin.closed() then
+			setRowTestOpen(false)
+		end
+	end
 
 	-- Live demo window whose options are driven by the checkboxes above
 	if demoWinOpen then

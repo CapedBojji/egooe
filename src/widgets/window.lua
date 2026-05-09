@@ -133,8 +133,12 @@ return Runtime.widget(function(options, fn)
 					TextSize = style.textSize,
 					TextXAlignment = Enum.TextXAlignment.Left,
 					TextYAlignment = Enum.TextYAlignment.Center,
-					Size = UDim2.new(1, -20, 1, 0),
+					Size = UDim2.new(0, 0, 1, 0),
 					LayoutOrder = 1,
+
+					create("UIFlexItem", {
+						FlexMode = Enum.UIFlexMode.Fill,
+					}),
 				}),
 
 				create("TextButton", {
@@ -331,11 +335,6 @@ return Runtime.widget(function(options, fn)
 	refs.minimize.Visible = minimizable
 	refs.close.Visible = options.closable or false
 
-	-- Title label width: shrink by 20px per visible button (16px + 4px UIListLayout spacing)
-	local titlePad = 0
-	if options.closable then titlePad += 20 end
-	if minimizable then titlePad += 20 end
-	refs.title.Size = UDim2.new(1, -titlePad, 1, 0)
 	refs.title.Text = options.title or ""
 
 	-- Minimize collapse / restore
