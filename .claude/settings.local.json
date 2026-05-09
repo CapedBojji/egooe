@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "mcp__Roblox_Studio__screen_capture",
-      "mcp__Roblox_Studio__execute_luau",
-      "Bash(mise run *)"
-    ]
-  }
-}
