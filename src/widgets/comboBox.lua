@@ -32,6 +32,16 @@ return Runtime.widget(function(options)
 	local isOpen, setIsOpen = Runtime.useState(false)
 	local hovered, setHovered = Runtime.useState(false)
 
+	if options.selected and options.selected ~= selectedValue then
+		for idx, item in ipairs(items) do
+			if item == options.selected then
+				setSelectedValue(options.selected)
+				setSelectedIndex(idx)
+				break
+			end
+		end
+	end
+
 	-- The combo button (in normal tree)
 	local refs = Runtime.useInstance(function(ref)
 		local style = Style.get()
