@@ -61,15 +61,23 @@ return Runtime.widget(function(options, fn)
 
 	Runtime.scope(fn)
 
+	-- Only manage UIFlexItems we own (tagged "_rowManaged") so callers that
+	-- configure their own UIFlexItem on a child are not overwritten.
+	-- GetChildren() is direct-children-only, so nested sub-layouts are safe.
 	for _, child in refs.frame:GetChildren() do
 		if child:IsA("GuiObject") then
 			if child.Size.X.Scale > 0 then
 				local fi = child:FindFirstChildOfClass("UIFlexItem")
-					or Instance.new("UIFlexItem", child)
-				fi.FlexMode = Enum.UIFlexMode.Fill
+				if not fi then
+					fi = Instance.new("UIFlexItem", child)
+					fi:SetAttribute("_rowManaged", true)
+					fi.FlexMode = Enum.UIFlexMode.Fill
+				end
 			else
 				local fi = child:FindFirstChildOfClass("UIFlexItem")
-				if fi then fi:Destroy() end
+				if fi and fi:GetAttribute("_rowManaged") then
+					fi:Destroy()
+				end
 			end
 		end
 	end
