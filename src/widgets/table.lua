@@ -128,8 +128,8 @@ return Runtime.widget(function(options, fn)
 	local tableState = {
 		columns = columns,
 		columnWidths = computeColumnWidths(absoluteWidth, columns),
-		rowHeight = options.rowHeight or style.itemHeight,
-		cellPadding = options.cellPadding or style.framePadding,
+		rowHeight = options.rowHeight or style.tableRowHeight or style.itemHeight,
+		cellPadding = options.cellPadding or style.tableCellPadding or style.framePadding,
 		borders = options.borders or false,
 		header = options.header or false,
 		stripeRows = options.stripeRows or false,

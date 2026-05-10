@@ -44,6 +44,13 @@ return Runtime.widget(function(text, options)
 	label.TextColor3 = options.color or style.textColor
 
 	local inScrollX = Runtime.useContext(Contexts.scrollX)
+	local tableCellState = Runtime.useContext(Contexts.tableCellState)
+
+	if tableCellState and tableCellState.centered then
+		label.TextXAlignment = Enum.TextXAlignment.Center
+	else
+		label.TextXAlignment = Enum.TextXAlignment.Left
+	end
 
 	if options.wrapped then
 		label.TextWrapped = true

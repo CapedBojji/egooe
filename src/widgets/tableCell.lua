@@ -80,8 +80,11 @@ return Runtime.widget(function(options, fn)
 				Size = UDim2.new(1, 0, 1, 0),
 
 				create("UIListLayout", {
+					[ref] = "layout",
 					SortOrder = Enum.SortOrder.LayoutOrder,
 					Padding = UDim.new(0, 2),
+					HorizontalAlignment = Enum.HorizontalAlignment.Center,
+					VerticalAlignment = Enum.VerticalAlignment.Center,
 				}),
 
 				create("UIPadding", {
@@ -106,5 +109,8 @@ return Runtime.widget(function(options, fn)
 	refs.padding.PaddingTop = UDim.new(0, tableState.cellPadding.Y)
 	refs.padding.PaddingBottom = UDim.new(0, tableState.cellPadding.Y)
 
+	Runtime.provideContext(Contexts.tableCellState, {
+		centered = true,
+	})
 	Runtime.scope(fn)
 end)

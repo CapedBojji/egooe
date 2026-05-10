@@ -664,7 +664,7 @@ return Runtime.widget(function()
 			movable = true,
 			resizable = true,
 			size = Vector2.new(420, 260),
-			position = Vector2.new(1120, 30),
+			position = Vector2.new(860, 30),
 		}, function()
 			label("Cells can host widgets. Toggle styling from Demos tab.")
 			space(6)

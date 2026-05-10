@@ -27,6 +27,8 @@ export type CheckboxHandle = {
 local Runtime = require(script.Parent.Parent.Runtime)
 local Style = require(script.Parent.Parent.Style)
 local create = require(script.Parent.Parent.create)
+local Contexts = require(script.Parent.Parent.contexts)
+local TextService = game:GetService("TextService")
 
 return Runtime.widget(function(text, options)
 	options = options or {}
@@ -103,6 +105,7 @@ return Runtime.widget(function(text, options)
 
 	local style = Style.get()
 	local isChecked = if options.checked ~= nil then options.checked else checked
+	local tableCellState = Runtime.useContext(Contexts.tableCellState)
 
 	local box = refs.box
 	box.Text = isChecked and "✓" or ""
@@ -122,6 +125,17 @@ return Runtime.widget(function(text, options)
 
 	refs.label.Text = text
 	refs.label.TextColor3 = if options.disabled then style.textDisabledColor else style.textColor
+
+	local boxSize = style.itemHeight - 4
+	if tableCellState and tableCellState.centered then
+		local measured = TextService:GetTextSize(text, style.textSize, Enum.Font.Code, Vector2.new(1000, style.itemHeight))
+		local rowWidth = boxSize + 6 + measured.X
+		refs.row.Size = UDim2.new(0, rowWidth, 0, style.itemHeight)
+		refs.label.Size = UDim2.new(0, measured.X, 1, 0)
+	else
+		refs.row.Size = UDim2.new(1, 0, 0, style.itemHeight)
+		refs.label.Size = UDim2.new(1, -(boxSize + 6), 1, 0)
+	end
 
 	local handle = {
 		checked = function()

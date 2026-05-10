@@ -74,6 +74,8 @@ local defaultStyle = {
 	tableStripeColumnTransparency = 0.97,
 	tableBorderColor = Color3.fromRGB(110, 110, 125),
 	tableBorderTransparency = 0.5,
+	tableRowHeight = 30,
+	tableCellPadding = Vector2.new(6, 4),
 
 	-- Sizing
 	textSize = 13,
