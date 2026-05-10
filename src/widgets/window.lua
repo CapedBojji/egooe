@@ -53,6 +53,22 @@ local create = require(script.Parent.Parent.create)
 local Contexts = require(script.Parent.Parent.contexts)
 
 local MIN_SIZE = Vector2.new(120, 80)
+local DOUBLE_CLICK_TIME = 0.3
+local DRAG_THRESHOLD = 4
+
+local function pointInside(guiObject: GuiObject?, position: Vector3): boolean
+	if guiObject == nil or not guiObject.Visible then
+		return false
+	end
+
+	local absolutePosition = guiObject.AbsolutePosition
+	local absoluteSize = guiObject.AbsoluteSize
+
+	return position.X >= absolutePosition.X
+		and position.X <= absolutePosition.X + absoluteSize.X
+		and position.Y >= absolutePosition.Y
+		and position.Y <= absolutePosition.Y + absoluteSize.Y
+end
 
 return Runtime.widget(function(options, fn)
 	if type(options) == "string" then
@@ -70,6 +86,10 @@ return Runtime.widget(function(options, fn)
 		local connectEvent = createConnect()
 		ref.dragConnection = nil
 		ref.resizeConnection = nil
+		ref.lastTitleClickTime = 0
+		ref.dragStartPosition = nil
+		ref.dragMoved = false
+		ref.ignoreTitleClick = false
 
 		local initialSize = options.size or Vector2.new(300, 400)
 		local titleBarHeight = style.titleBarHeight
@@ -192,10 +212,20 @@ return Runtime.widget(function(options, fn)
 				}),
 
 				InputBegan = function(clickInput)
-					if not ref.titleBar.Active then
+					if clickInput.UserInputType ~= Enum.UserInputType.MouseButton1 then
 						return
 					end
-					if clickInput.UserInputType ~= Enum.UserInputType.MouseButton1 then
+
+					if pointInside(ref.minimize, clickInput.Position) or pointInside(ref.close, clickInput.Position) then
+						ref.ignoreTitleClick = true
+						return
+					end
+
+					ref.ignoreTitleClick = false
+					ref.dragStartPosition = clickInput.Position
+					ref.dragMoved = false
+
+					if not ref.frame:GetAttribute("movable") then
 						return
 					end
 
@@ -219,6 +249,15 @@ return Runtime.widget(function(options, fn)
 						if moveInput.UserInputType ~= Enum.UserInputType.MouseMovement then
 							return
 						end
+
+						if ref.dragStartPosition then
+							local dragDistance = (Vector2.new(moveInput.Position.X, moveInput.Position.Y)
+								- Vector2.new(ref.dragStartPosition.X, ref.dragStartPosition.Y)).Magnitude
+							if dragDistance > DRAG_THRESHOLD then
+								ref.dragMoved = true
+							end
+						end
+
 						local delta = lastMousePosition - moveInput.Position
 						lastMousePosition = moveInput.Position
 						ref.frame.Position = ref.frame.Position - UDim2.new(0, delta.X, 0, delta.Y)
@@ -230,6 +269,32 @@ return Runtime.widget(function(options, fn)
 						ref.dragConnection:Disconnect()
 						ref.dragConnection = nil
 					end
+
+					if input.UserInputType ~= Enum.UserInputType.MouseButton1 then
+						return
+					end
+
+					if ref.ignoreTitleClick then
+						ref.ignoreTitleClick = false
+						ref.dragStartPosition = nil
+						ref.dragMoved = false
+						return
+					end
+
+					if ref.minimize.Visible and not ref.dragMoved then
+						local now = os.clock()
+						if now - ref.lastTitleClickTime <= DOUBLE_CLICK_TIME then
+							setMinimized(function(prev)
+								return not prev
+							end)
+							ref.lastTitleClickTime = 0
+						else
+							ref.lastTitleClickTime = now
+						end
+					end
+
+					ref.dragStartPosition = nil
+					ref.dragMoved = false
 				end,
 			}),
 
@@ -331,7 +396,8 @@ return Runtime.widget(function(options, fn)
 	local resizable = if options.resizable ~= nil then options.resizable else true
 	local minimizable = options.minimizable or false
 
-	refs.titleBar.Active = movable
+	refs.titleBar.Active = movable or minimizable
+	refs.frame:SetAttribute("movable", movable)
 	refs.minimize.Visible = minimizable
 	refs.close.Visible = options.closable or false
 

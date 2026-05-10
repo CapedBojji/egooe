@@ -18,6 +18,9 @@ local _collapsingHeader = require(script.widgets.collapsingHeader)
 local _clickableLabel = require(script.widgets.clickableLabel)
 local _modal = require(script.widgets.modal)
 local _childWindow = require(script.widgets.childWindow)
+local _table = require(script.widgets.table)
+local _tableRow = require(script.widgets.tableRow)
+local _tableCell = require(script.widgets.tableCell)
 
 -- Handle types
 type ButtonHandle = _button.ButtonHandle
@@ -42,8 +45,11 @@ type InputOptions = { text: string?, placeholder: string?, label: string? }
 type WindowOptions = {
 	title: string?,
 	closable: boolean?,
+	minimizable: boolean?,
 	movable: boolean?,
 	resizable: boolean?,
+	scrollX: boolean?,
+	scrollY: boolean?,
 	size: Vector2?,
 	position: Vector2?,
 }
@@ -63,6 +69,22 @@ type ToggleOptions = { on: boolean?, disabled: boolean? }
 type ModalOptions = { title: string?, open: boolean?, closable: boolean? }
 type ChildWindowOptions = { title: string?, height: number?, minimizable: boolean?, scrollX: boolean?, scrollY: boolean? }
 type PopupOptions = { open: boolean?, position: Vector2? }
+type TableColumn = { width: number?, fill: boolean? }
+type TableOptions = {
+	columns: { TableColumn }?,
+	header: boolean?,
+	rowHeight: number?,
+	cellPadding: Vector2?,
+	borders: boolean?,
+	stripeRows: boolean?,
+	stripeColumns: boolean?,
+	stripeRowColor: Color3?,
+	stripeColumnColor: Color3?,
+	stripeRowTransparency: number?,
+	stripeColumnTransparency: number?,
+}
+type TableRowOptions = { header: boolean? }
+type TableCellOptions = { column: number? }
 
 return {
 	-- Runtime API (Plasma-compatible)
@@ -115,6 +137,9 @@ return {
 	modal = _modal :: (options: ModalOptions, children: () -> ()) -> ModalHandle,
 	popup = require(script.widgets.popup) :: (options: PopupOptions, children: () -> ()) -> (),
 	childWindow = _childWindow :: (options: string | ChildWindowOptions, children: () -> ()) -> ChildWindowHandle,
+	table = _table :: (options: TableOptions, children: () -> ()) -> (),
+	tableRow = _tableRow :: (options: (TableRowOptions | (() -> ()))?, children: (() -> ())?) -> (),
+	tableCell = _tableCell :: (options: (TableCellOptions | (() -> ()))?, children: (() -> ())?) -> (),
 
 	demoWindow = require(script.widgets.demoWindow) :: () -> (),
 }

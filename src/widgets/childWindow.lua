@@ -38,6 +38,20 @@ local Style = require(script.Parent.Parent.Style)
 local create = require(script.Parent.Parent.create)
 local Contexts = require(script.Parent.Parent.contexts)
 
+local function pointInside(guiObject: GuiObject?, position: Vector3): boolean
+	if guiObject == nil or not guiObject.Visible then
+		return false
+	end
+
+	local absolutePosition = guiObject.AbsolutePosition
+	local absoluteSize = guiObject.AbsoluteSize
+
+	return position.X >= absolutePosition.X
+		and position.X <= absolutePosition.X + absoluteSize.X
+		and position.Y >= absolutePosition.Y
+		and position.Y <= absolutePosition.Y + absoluteSize.Y
+end
+
 return Runtime.widget(function(options, fn)
 	if type(options) == "string" then
 		options = { title = options }
@@ -76,7 +90,8 @@ return Runtime.widget(function(options, fn)
 				BorderSizePixel = 0,
 				Size = UDim2.new(1, 0, 0, titleBarHeight),
 				Text = "",
-				Active = false,
+				Active = true,
+				AutoButtonColor = false,
 				LayoutOrder = 1,
 
 				create("UICorner", {
@@ -136,6 +151,20 @@ return Runtime.widget(function(options, fn)
 						end)
 					end,
 				}),
+
+				InputEnded = function(input)
+					if input.UserInputType ~= Enum.UserInputType.MouseButton1 then
+						return
+					end
+
+					if not ref.minimize.Visible or pointInside(ref.minimize, input.Position) then
+						return
+					end
+
+					setMinimized(function(prev)
+						return not prev
+					end)
+				end,
 			}),
 
 			-- Scrollable content area

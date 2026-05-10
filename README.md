@@ -8,6 +8,8 @@ An immediate-mode UI framework for Roblox with **Iris visual style** and a **Pla
 - **Iris dark theme** – Dear ImGui inspired color palette (dark blues, accent blues, transparent frame backgrounds)
 - **No automatic sizing** – all widgets have explicit, fixed pixel sizes (unlike Plasma)
 - **Modern Roblox UI** – `UICorner`, `UIStroke`, `UIListLayout`, `ScrollingFrame` used throughout
+- **Interactive demo gallery** – `demoWindow()` now has inline gallery tab plus dedicated side-window demos
+- **Table widgets** – immediate-mode `table`, `tableRow`, and `tableCell` with nested widgets, borders, and striping
 
 ## Installation
 
@@ -34,10 +36,9 @@ RunService.Heartbeat:Connect(function()
 end)
 ```
 
-This opens a 340×580 window covering every widget category:
-**Text** (label, heading, wrapped text) · **Buttons** (normal, sized, disabled) ·
-**Checkboxes** (controlled, uncontrolled, disabled) · **Sliders** · **Text Input** ·
-**Row layouts** · **Separators** · **Conditional visibility toggle**
+This opens a gallery window with 2 tabs:
+- `Gallery` for broad inline widget examples
+- `Demos` for dedicated playgrounds that open side windows for `window`, `childWindow`, `table`, `popup`, `modal`, and layout tests
 
 ## Quick Start
 
@@ -82,6 +83,10 @@ end)
 | `heading`     | Bold section heading                             |
 | `separator`   | Horizontal divider line                          |
 | `row`         | Horizontal layout container                      |
+| `childWindow` | Inline scrollable panel with clickable header    |
+| `table`       | Immediate-mode table container                   |
+| `tableRow`    | Table row builder                                |
+| `tableCell`   | Table cell builder for nested widgets            |
 | `space`       | Blank pixel spacer                               |
 | `portal`      | Mount children in an arbitrary Instance          |
 | `demoWindow`  | Live showcase of every widget (zero setup)       |
@@ -114,4 +119,3 @@ EgooE.useKey(key)
 EgooE.createContext(name) / provideContext(ctx, val) / useContext(ctx)
 EgooE.useStyle() / setStyle(fragment)
 ```
-

@@ -32,6 +32,10 @@ EgooE is an immediate-mode UI framework for Roblox. Every frame you call widget 
   - [separator](#separator)
   - [space](#space)
   - [row](#row)
+  - [childWindow](#childwindow)
+  - [table](#table)
+  - [tableRow](#tablerow)
+  - [tableCell](#tablecell)
   - [clickableLabel](#clickablelabel)
   - [collapsingHeader](#collapsingheader)
   - [popup](#popup)
@@ -214,8 +218,11 @@ window(options: string | WindowOptions, children: () -> ()) -> WindowHandle
 |---|---|---|---|
 | `title` | `string` | `""` | Title bar text |
 | `closable` | `boolean` | `false` | Show × close button |
+| `minimizable` | `boolean` | `false` | Show minimize button and allow title-bar double-click minimize |
 | `movable` | `boolean` | `true` | Allow dragging by title bar |
 | `resizable` | `boolean` | `true` | Show resize grip (bottom-right) |
+| `scrollX` | `boolean` | `false` | Enable horizontal scrolling |
+| `scrollY` | `boolean` | `true` | Enable vertical scrolling |
 | `size` | `Vector2` | `(300, 400)` | Initial size in pixels |
 | `position` | `Vector2` | `(60, 60)` | Initial position in pixels |
 
@@ -224,6 +231,7 @@ window(options: string | WindowOptions, children: () -> ()) -> WindowHandle
 | Method | Returns | Description |
 |---|---|---|
 | `closed()` | `boolean` | `true` once when the × button was clicked |
+| `minimized()` | `boolean` | `true` once when the window enters minimized state |
 
 **Example**
 ```lua
@@ -236,6 +244,7 @@ RunService.Heartbeat:Connect(function()
         local w = EgooE.window({
             title = "Settings",
             closable = true,
+            minimizable = true,
             movable = true,
             resizable = true,
             size = Vector2.new(300, 400),
@@ -250,6 +259,8 @@ RunService.Heartbeat:Connect(function()
     end)
 end)
 ```
+
+Double-click the title bar to minimize or restore when `minimizable = true`. Dragging still works normally.
 
 ---
 
@@ -761,6 +772,133 @@ end)
 
 ---
 
+### childWindow
+
+An inline scrollable panel with its own header bar. Unlike `window`, it stays inside parent layout and does not drag or resize.
+
+**Signature**
+```
+childWindow(options: string | ChildWindowOptions, children: () -> ()) -> ChildWindowHandle
+```
+
+**Options**
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `title` | `string` | `""` | Header title |
+| `height` | `number` | `200` | Content height in pixels |
+| `minimizable` | `boolean` | `true` | Show minimize button and allow header click minimize |
+| `scrollX` | `boolean` | `false` | Enable horizontal scrolling |
+| `scrollY` | `boolean` | `true` | Enable vertical scrolling |
+
+**Handle**
+
+| Method | Returns | Description |
+|---|---|---|
+| `minimized()` | `boolean` | `true` once when the panel enters minimized state |
+
+**Example**
+```lua
+EgooE.childWindow({ title = "Logs", height = 120 }, function()
+    for i = 1, 10 do
+        EgooE.label("Log line " .. i)
+    end
+end)
+```
+
+Click the header bar to minimize or restore when `minimizable = true`.
+
+---
+
+### table
+
+Immediate-mode table root. Use it with `tableRow` and `tableCell`.
+
+**Signature**
+```
+table(options: TableOptions, children: () -> ()) -> ()
+```
+
+**Options**
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `columns` | `{TableColumn}` | one fill column | Column sizing rules |
+| `header` | `boolean` | `false` | Treat first row as header |
+| `rowHeight` | `number` | theme item height | Fixed row height |
+| `cellPadding` | `Vector2` | theme frame padding | Inner cell padding |
+| `borders` | `boolean` | `false` | Draw outer border and inner grid lines |
+| `stripeRows` | `boolean` | `false` | Alternate body row colors |
+| `stripeColumns` | `boolean` | `false` | Alternate column colors |
+| `stripeRowColor` | `Color3` | theme table stripe row color | Override row stripe color |
+| `stripeColumnColor` | `Color3` | theme table stripe column color | Override column stripe color |
+| `stripeRowTransparency` | `number` | theme table stripe row transparency | Override row stripe transparency |
+| `stripeColumnTransparency` | `number` | theme table stripe column transparency | Override column stripe transparency |
+
+**Example**
+```lua
+EgooE.table({
+    header = true,
+    borders = true,
+    stripeRows = true,
+    columns = {
+        { width = 120 },
+        { fill = true },
+        { width = 90 },
+    },
+}, function()
+    EgooE.tableRow(function()
+        EgooE.tableCell(function() EgooE.label("Name") end)
+        EgooE.tableCell(function() EgooE.label("Role") end)
+        EgooE.tableCell(function() EgooE.label("Ready") end)
+    end)
+
+    EgooE.tableRow(function()
+        EgooE.tableCell(function() EgooE.label("Scout") end)
+        EgooE.tableCell(function() EgooE.label("Nested widgets work here") end)
+        EgooE.tableCell(function()
+            EgooE.checkbox("Yes", { checked = true })
+        end)
+    end)
+end)
+```
+
+---
+
+### tableRow
+
+Adds one row inside current `table`.
+
+**Signature**
+```
+tableRow(options?: TableRowOptions | () -> (), children?: () -> ()) -> ()
+```
+
+**Options**
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `header` | `boolean` | first row if table `header = true` | Force row header styling |
+
+---
+
+### tableCell
+
+Adds one cell inside current `tableRow`. Cell content can contain any other widgets.
+
+**Signature**
+```
+tableCell(options?: TableCellOptions | () -> (), children?: () -> ()) -> ()
+```
+
+**Options**
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `column` | `number` | next column | Explicit sequential column index |
+
+---
+
 ### clickableLabel
 
 A hyperlink-style text label that underlines on hover and fires a click event.
@@ -928,7 +1066,9 @@ end
 
 ### demoWindow
 
-Opens the built-in widget gallery that showcases every available widget with interactive examples.
+Opens built-in widget gallery with 2 tabs:
+- `Gallery` for broad inline examples
+- `Demos` for dedicated widget launchers that open side test windows
 
 **Signature**
 ```

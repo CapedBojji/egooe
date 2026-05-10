@@ -65,6 +65,16 @@ local defaultStyle = {
 	modalOverlayColor = Color3.fromRGB(0, 0, 0),
 	modalOverlayTransparency = 0.5,
 
+	-- Table
+	tableHeaderColor = Color3.fromRGB(41, 74, 122),
+	tableHeaderTransparency = 0.15,
+	tableStripeRowColor = Color3.fromRGB(255, 255, 255),
+	tableStripeRowTransparency = 0.94,
+	tableStripeColumnColor = Color3.fromRGB(255, 255, 255),
+	tableStripeColumnTransparency = 0.97,
+	tableBorderColor = Color3.fromRGB(110, 110, 125),
+	tableBorderTransparency = 0.5,
+
 	-- Sizing
 	textSize = 13,
 	framePadding = Vector2.new(4, 3),
