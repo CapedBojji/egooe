@@ -4,7 +4,8 @@ interface RowOptions {
 	verticalAlignment?: CastsToEnum<Enum.VerticalAlignment>;
 }
 
-declare function row(options?: RowOptions | (() => void), children?: () => void): void;
+declare function row(children: () => void): void;
+declare function row(options: RowOptions, children: () => void): void;
 
 declare namespace row {
 	export { RowOptions };
