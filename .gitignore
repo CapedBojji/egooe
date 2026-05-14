@@ -4,3 +4,5 @@ Packages/
 **.rbxl.lock
 .claude/
 sourcemap.json
+out/
+node_modules

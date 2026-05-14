@@ -1,6 +1,6 @@
 {
 	"name": "iris-plasma",
 	"tree": {
-		"$path": "src"
+		"$path": "out"
 	}
 }

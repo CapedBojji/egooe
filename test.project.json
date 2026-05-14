@@ -29,7 +29,7 @@
 		},
 		"ReplicatedStorage": {
 			"EgooE": {
-				"$path": "src"
+				"$path": "out"
 			}
 		},
 		"StarterPlayer": {
