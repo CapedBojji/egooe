@@ -109,7 +109,7 @@ return Runtime.widget(function(options, fn)
 				options.position and options.position.Y or 60
 			),
 			Size = UDim2.new(0, initialSize.X, 0, initialSize.Y),
-			ClipsDescendants = true,
+			ClipsDescendants = false,
 
 			create("UICorner", {
 				CornerRadius = UDim.new(0, 0),
@@ -398,6 +398,7 @@ return Runtime.widget(function(options, fn)
 
 	refs.titleBar.Active = movable or minimizable
 	refs.frame:SetAttribute("movable", movable)
+	refs.frame:SetAttribute("EgooEWindow", true)
 	refs.minimize.Visible = minimizable
 	refs.close.Visible = options.closable or false
 

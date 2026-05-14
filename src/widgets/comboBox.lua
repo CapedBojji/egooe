@@ -13,6 +13,30 @@ local ARROW = "▼"
 local ITEM_HEIGHT = 22
 local MAX_VISIBLE_ITEMS = 6
 
+local function findDropdownParent(comboBtn: GuiObject?, rootGui: Instance?): Instance?
+	if comboBtn then
+		local ancestor = comboBtn.Parent
+		while ancestor do
+			if ancestor:IsA("GuiObject") and ancestor:GetAttribute("EgooEWindow") then
+				return ancestor
+			end
+			ancestor = ancestor.Parent
+		end
+	end
+
+	return rootGui
+end
+
+local function toParentPosition(guiObject: GuiObject, parentInstance: Instance): Vector2
+	local absolutePosition = guiObject.AbsolutePosition
+
+	if parentInstance:IsA("GuiObject") then
+		return absolutePosition - parentInstance.AbsolutePosition
+	end
+
+	return absolutePosition
+end
+
 return Runtime.widget(function(options)
 	options = options or {}
 
@@ -231,14 +255,21 @@ return Runtime.widget(function(options)
 		refs.dropdown.Visible = isOpen
 
 		if isOpen then
+			local rootGui = Runtime.useRootInstance()
+			local dropdownParent = findDropdownParent(refs.comboBtn, rootGui)
+			if dropdownParent and refs.dropdown.Parent ~= dropdownParent then
+				refs.dropdown.Parent = dropdownParent
+			end
+
 			-- Align dropdown below the button
 			local absPos = refs.comboBtn.AbsolutePosition
 			local absSize = refs.comboBtn.AbsoluteSize
+			local localPos = if dropdownParent then toParentPosition(refs.comboBtn, dropdownParent) else absPos
 
 			local totalH = #items * ITEM_HEIGHT
 			local maxH = math.min(totalH, MAX_VISIBLE_ITEMS * ITEM_HEIGHT)
 
-			refs.dropdown.Position = UDim2.new(0, absPos.X, 0, absPos.Y + absSize.Y + 2)
+			refs.dropdown.Position = UDim2.new(0, localPos.X, 0, localPos.Y + absSize.Y + 2)
 			refs.dropdown.Size = UDim2.new(0, absSize.X, 0, maxH)
 			refs.dropdown.CanvasSize = UDim2.new(0, 0, 0, totalH)
 
