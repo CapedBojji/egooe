@@ -51,6 +51,7 @@ local createConnect = require(script.Parent.Parent.createConnect)
 local Style = require(script.Parent.Parent.Style)
 local create = require(script.Parent.Parent.create)
 local Contexts = require(script.Parent.Parent.contexts)
+local WindowConstants = require(script.Parent.windowConstants)
 
 local MIN_SIZE = Vector2.new(120, 80)
 local DOUBLE_CLICK_TIME = 0.3
@@ -398,7 +399,7 @@ return Runtime.widget(function(options, fn)
 
 	refs.titleBar.Active = movable or minimizable
 	refs.frame:SetAttribute("movable", movable)
-	refs.frame:SetAttribute("EgooEWindow", true)
+	refs.frame:SetAttribute(WindowConstants.WINDOW_ATTRIBUTE, true)
 	refs.minimize.Visible = minimizable
 	refs.close.Visible = options.closable or false
 

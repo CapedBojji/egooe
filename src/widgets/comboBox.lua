@@ -8,6 +8,7 @@ local UserInputService = game:GetService("UserInputService")
 local Runtime = require(script.Parent.Parent.Runtime)
 local Style = require(script.Parent.Parent.Style)
 local create = require(script.Parent.Parent.create)
+local WindowConstants = require(script.Parent.windowConstants)
 
 local ARROW = "▼"
 local ITEM_HEIGHT = 22
@@ -17,7 +18,7 @@ local function findDropdownParent(comboBtn: GuiObject?, rootGui: Instance?): Ins
 	if comboBtn then
 		local ancestor = comboBtn.Parent
 		while ancestor do
-			if ancestor:IsA("GuiObject") and ancestor:GetAttribute("EgooEWindow") then
+			if ancestor:IsA("GuiObject") and ancestor:GetAttribute(WindowConstants.WINDOW_ATTRIBUTE) then
 				return ancestor
 			end
 			ancestor = ancestor.Parent
@@ -30,8 +31,8 @@ end
 local function toParentPosition(guiObject: GuiObject, parentInstance: Instance): Vector2
 	local absolutePosition = guiObject.AbsolutePosition
 
-	if parentInstance:IsA("GuiObject") then
-		return absolutePosition - parentInstance.AbsolutePosition
+	if parentInstance:IsA("GuiBase2d") then
+		return absolutePosition - (parentInstance :: GuiBase2d).AbsolutePosition
 	end
 
 	return absolutePosition
@@ -228,6 +229,7 @@ return Runtime.widget(function(options)
 		end
 	end, isOpen)
 
+	local rootGui = Runtime.useRootInstance()
 	local style = Style.get()
 
 	-- Update button visuals — always use internal selectedValue so it reflects clicks immediately
@@ -252,10 +254,13 @@ return Runtime.widget(function(options)
 	end
 
 	if refs.dropdown then
+		if not isOpen and rootGui and refs.dropdown.Parent ~= rootGui then
+			refs.dropdown.Parent = rootGui
+		end
+
 		refs.dropdown.Visible = isOpen
 
 		if isOpen then
-			local rootGui = Runtime.useRootInstance()
 			local dropdownParent = findDropdownParent(refs.comboBtn, rootGui)
 			if dropdownParent and refs.dropdown.Parent ~= dropdownParent then
 				refs.dropdown.Parent = dropdownParent
