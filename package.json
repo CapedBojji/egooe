@@ -1,0 +1,39 @@
+{
+  "name": "@rbxts/egooe",
+  "version": "0.1.6",
+  "description": "EgooE - Immediate-mode UI framework for Roblox",
+  "main": "out/init.lua",
+  "scripts": {
+    "build": "rbxtsc",
+    "watch": "rbxtsc -w",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "roblox",
+    "rbxts",
+    "ui",
+    "imgui",
+    "immediate-mode"
+  ],
+  "author": "CapedBojji",
+  "license": "MIT",
+  "type": "commonjs",
+  "types": "out/index.d.ts",
+  "files": [
+    "out",
+    "!**/*.tsbuildinfo"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CapedBojji/EgooE"
+  },
+  "devDependencies": {
+    "@rbxts/compiler-types": "^3.0.0-types.0",
+    "@rbxts/types": "^1.0.920",
+    "roblox-ts": "^3.0.0",
+    "typescript": "5.9.3"
+  }
+}
