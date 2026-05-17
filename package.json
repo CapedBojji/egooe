@@ -28,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/CapedBojji/EgooE"
+    "url": "git+https://github.com/CapedBojji/EgooE.git"
   },
   "devDependencies": {
     "@rbxts/compiler-types": "^3.0.0-types.0",
