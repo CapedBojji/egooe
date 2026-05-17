@@ -2,9 +2,8 @@ name: Publish to npm
 
 on:
   push:
-    tags:
-      - "v*.*.*"
-      - "*.*.*"
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -14,56 +13,43 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    environment: npm
+    environment: npm # remove this if you did NOT set environment "npm" in npm trusted publisher
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 22
-          cache: npm
+          node-version: 24
+          registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false
 
       - name: Install dependencies
         run: npm ci
 
       - name: Build package
-        run: npm run build
-
-      - name: Verify tag matches package version
-        if: github.event_name == 'push'
-        run: |
-          PACKAGE_VERSION=$(node -p "require('./package.json').version")
-          TAG_NAME="${GITHUB_REF_NAME#v}"
-
-          if [ "$TAG_NAME" != "$PACKAGE_VERSION" ]; then
-            echo "Tag version v$TAG_NAME does not match package.json version $PACKAGE_VERSION" >&2
-            exit 1
-          fi
+        run: npm run build --if-present
 
       - name: Check if version already published
         id: version_check
+        shell: bash
         run: |
           PACKAGE_NAME=$(node -p "require('./package.json').name")
           LOCAL_VERSION=$(node -p "require('./package.json').version")
-          PUBLISHED_VERSION=$(npm view "$PACKAGE_NAME" version 2>/dev/null || echo "none")
 
           echo "Package: $PACKAGE_NAME"
           echo "Local version: $LOCAL_VERSION"
-          echo "Published version: $PUBLISHED_VERSION"
 
-          if [ "$LOCAL_VERSION" = "$PUBLISHED_VERSION" ]; then
-            echo "Version $LOCAL_VERSION already published, skipping."
+          if npm view "$PACKAGE_NAME@$LOCAL_VERSION" version >/dev/null 2>&1; then
+            echo "$PACKAGE_NAME@$LOCAL_VERSION already published, skipping."
             echo "should_publish=false" >> "$GITHUB_OUTPUT"
           else
-            echo "Version $LOCAL_VERSION not published yet."
+            echo "$PACKAGE_NAME@$LOCAL_VERSION not published yet."
             echo "should_publish=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Publish package
         if: steps.version_check.outputs.should_publish == 'true'
-        env:
-          NODE_AUTH_TOKEN: ""
-        run: npm publish --access public --provenance
+        run: npm publish --access public
