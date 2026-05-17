@@ -83,8 +83,8 @@ interface EgooEStyle {
 }
 
 declare const Style: {
-	get(): EgooEStyle;
-	set(tokens: Partial<EgooEStyle>): void;
+	get: () => EgooEStyle;
+	set: (tokens: Partial<EgooEStyle>) => void;
 };
 
 declare namespace Style {
